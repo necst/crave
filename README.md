@@ -8,7 +8,7 @@ crAVe is a research project developed at [NECSTLab](http://necst.it).
 
 We will present the findings of this work in a research paper:
 
-**Toward Systematically Exploring Antivirus Engines** (short paper)
+**Toward Systematically Exploring Antivirus Engines** (short paper)   
 Davide Quarta, Federico Salvioni, Andrea Continella, Stefano Zanero.
 *In Proceedings of the Conference on Detection of Intrusions and Malware and Vulnerability Assessment (DIMVA), June 2018*
 
