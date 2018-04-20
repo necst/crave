@@ -1,0 +1,3 @@
+angr==7.8.2.21
+pefile==2017.11.5
+keystone-engine==0.9.1.post3
