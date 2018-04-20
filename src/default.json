@@ -1,5 +1,6 @@
 {
     "VT_API_KEY": "",
+    "no_submit": false,
     "tests": ["emu"],
     "samples": {
         "goodware": {
