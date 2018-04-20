@@ -40,7 +40,7 @@ def permutations(arrays, i=0):
     return res
 
 
-class Crave(object):
+class Crafter(object):
 
     def __init__(self, infile):
         self.input_file = infile
@@ -198,7 +198,7 @@ class Crave(object):
 
 if __name__ == '__main__':
     import json
-    crave = Crave(sys.argv[1])
+    crave = Crafter(sys.argv[1])
     results = crave.mutate()
 
     with open(os.path.join(crave.outdir, 'results.json'), 'w') as resf:

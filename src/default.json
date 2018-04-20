@@ -1,0 +1,21 @@
+{
+    "VT_API_KEY": "",
+    "tests": ["emu"],
+    "samples": {
+        "goodware": {
+            "sample": "base_samples/helloword.exe",
+            "packed": {
+                "UPX": "base_samples/helloword_upx.exe",
+                "MEW": "base_samples/helloword_mew.exe",
+            },
+        },
+        "malware": {
+            "sample": "base_samples/virut.exe",
+            "dropper": "base_samples/virut_dropper.exe",
+            "packed": {
+                "UPX": "base_samples/virut_upx.exe",
+                "MEW": "base_samples/virut_mew.exe",
+            },
+        },
+    }
+}
