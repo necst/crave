@@ -11,11 +11,12 @@ from core.labelizer import comparelabels
 
 
 class TestStaticUnp(Tester):
-    def __init__(self, key, payload, packed, no_submit=False):
-        self.key = key
-        self.payload = payload
-        self.packed = packed
-        self.no_submit = no_submit
+    # def __init__(self, key, payload, packed, no_submit=False):
+    def __init__(self, config):
+        self.key = config.VT_API_KEY
+        self.payload = config.payload
+        self.packed = config.packed
+        self.no_submit = config.no_submit
         self.payload_report = None
         self.packed_report = None
         self.staticunp_results = {}
@@ -125,23 +126,23 @@ class TestStaticUnp(Tester):
         self.printresults()
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('payload', type=str, help='Path to malicious payload')
-    parser.add_argument('packed', type=str, help='Path to packed sample *with broken stub*')
-    parser.add_argument('--no-submit', action='store_true', help='Do not submit samples. Only retrive reports')
-    parser.add_argument('--key', type=str, action='store', help='VirusTotal API key')
+# if __name__ == '__main__':
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument('payload', type=str, help='Path to malicious payload')
+#     parser.add_argument('packed', type=str, help='Path to packed sample *with broken stub*')
+#     parser.add_argument('--no-submit', action='store_true', help='Do not submit samples. Only retrive reports')
+#     parser.add_argument('--key', type=str, action='store', help='VirusTotal API key')
 
-    try:
-        args = parser.parse_args()
-    except IOError as e:
-        parser.error(e)
-        sys.exit()
+#     try:
+#         args = parser.parse_args()
+#     except IOError as e:
+#         parser.error(e)
+#         sys.exit()
 
-    test = TestStaticUnp(
-        args.key,
-        args.payload,
-        args.packed,
-        args.no_submit)
+#     test = TestStaticUnp(
+#         args.key,
+#         args.payload,
+#         args.packed,
+#         args.no_submit)
 
-    test.run()
+#     test.run()

@@ -11,12 +11,13 @@ from core.labelizer import comparelabels
 
 
 class TestEmu(Tester):
-    def __init__(self, key, gooddropper, payload, maldropper, no_submit=False):
-        self.key = key
-        self.gooddropper = gooddropper
-        self.payload = payload
-        self.maldropper = maldropper
-        self.no_submit = no_submit
+    # def __init__(self, key, gooddropper, payload, maldropper, no_submit=False):
+    def __init__(self, config):
+        self.key = config.VT_API_KEY
+        self.gooddropper = config.gooddropper
+        self.payload = config.payload
+        self.maldropper = config.maldropper
+        self.no_submit = config.no_submit
         self.gooddropper_report = None
         self.payload_report = None
         self.maldropper_report = None
