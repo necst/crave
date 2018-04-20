@@ -3,14 +3,15 @@ import argparse
 
 from time import sleep
 
-from submit import Submitter, Hash
-from query import Scanner
+from core import Tester
+from core.vt import Submitter, Hash
+from core.vt import Scanner
 from config import API_KEY
 from utils import green
 from labelizer import comparelabels
 
 
-class TestEmu(object):
+class TestEmu(Tester):
     def __init__(self, key, gooddropper, payload, maldropper, no_submit=False):
         self.key = key
         self.gooddropper = gooddropper

@@ -3,13 +3,14 @@ import argparse
 
 from time import sleep
 
+from core import Tester
 from submit import Submitter, Hash
 from query import Scanner
 from config import API_KEY
 from utils import green
 
 
-class TestHeuristics(object):
+class TestHeuristicsGoodware(Tester):
     def __init__(self, key, original, mutated, no_submit=False):
         self.key = key
         self.original = original
@@ -132,7 +133,7 @@ if __name__ == '__main__':
         parser.error(e)
         sys.exit()
 
-    test = TestHeuristics(
+    test = TestHeuristicsGoodware(
         args.key,
         args.original,
         args.mutated,

@@ -3,6 +3,7 @@ import argparse
 
 from time import sleep
 
+from core import Tester
 from submit import Submitter, Hash
 from query import Scanner
 from config import API_KEY
@@ -10,7 +11,7 @@ from utils import green
 from labelizer import comparelabels
 
 
-class TestStaticUnp(object):
+class TestStaticUnp(Tester):
     def __init__(self, key, payload, packed, no_submit=False):
         self.key = key
         self.payload = payload
