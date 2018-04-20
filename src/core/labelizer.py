@@ -1,5 +1,5 @@
 import re
-from soundex import mapper
+from core.utils.soundex import mapper
 
 AGGRESSIVE_LABELIZER = True
 

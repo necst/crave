@@ -6,7 +6,8 @@ import requests
 import hashlib
 import argparse
 
-from config import API_KEY, VT_SCAN_URL, VT_RESCAN_URL, HASHES_FILE
+from core.vt.config import VT_SCAN_URL, VT_RESCAN_URL, HASHES_FILE
+
 
 class Hash(object):
     def __init__(self, path):
@@ -118,7 +119,7 @@ class Submitter(object):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('path', type=str, help='Path to the file or folder to submit on VirusTotal')
-    parser.add_argument('--key', type=str, action='store', default=API_KEY, help='VirusTotal API key')
+    parser.add_argument('--key', type=str, action='store', help='VirusTotal API key')
     parser.add_argument('--rescan', action='store_true', help='Force rescan')
 
     try:

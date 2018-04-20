@@ -6,7 +6,7 @@ import requests
 import hashlib
 import argparse
 
-from config import API_KEY, VT_RES_URL, HASHES_FILE, DATA_FOLDER
+from core.vt.config import VT_RES_URL, HASHES_FILE, DATA_FOLDER
 
 
 class Scanner(object):
@@ -64,7 +64,7 @@ class Scanner(object):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--file', type=str, default=HASHES_FILE, help='Path to the hashes file')
-    parser.add_argument('--key', type=str, action='store', default=API_KEY, help='VirusTotal API key')
+    parser.add_argument('--key', type=str, action='store', help='VirusTotal API key')
 
     try:
         args = parser.parse_args()

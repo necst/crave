@@ -6,9 +6,8 @@ from time import sleep
 from core import Tester
 from core.vt import Submitter, Hash
 from core.vt import Scanner
-from config import API_KEY
-from utils import green
-from labelizer import comparelabels
+from core.utils.colors import green
+from core.labelizer import comparelabels
 
 
 class TestEmu(Tester):
@@ -154,7 +153,7 @@ if __name__ == '__main__':
     parser.add_argument('payload', type=str, help='Path to malicious payload')
     parser.add_argument('maldropper', type=str, help='Path to malware dropper')
     parser.add_argument('--no-submit', action='store_true', help='Do not submit samples. Only retrive reports')
-    parser.add_argument('--key', type=str, action='store', default=API_KEY, help='VirusTotal API key')
+    parser.add_argument('--key', type=str, action='store', help='VirusTotal API key')
 
     try:
         args = parser.parse_args()
