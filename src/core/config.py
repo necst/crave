@@ -3,8 +3,8 @@ try:
     import json
 except ImportError:
     import simplejson as json
-import logging
 
+import logging
 
 class Configuration():
     '''class that defines the methods for reading/writing a config file,
@@ -19,6 +19,7 @@ class Configuration():
         '''constructor passing a dictionary'''
         self.__dict__ = options
 
+
     def __getattr__(self, name):
         if name in self.__dict__:
             return self.__dict__[name]
@@ -29,29 +30,28 @@ class Configuration():
         ''' return the value, if not set then set it to default and return'''
         if name not in self.__dict__:
             self.__dict__[name] = default
+
         return self.__dict__[name]
 
-    @staticmethod
-    def loadConf(path):
-        c = Configuration()
+    def loadConf(self,path):
+
+        self.__dict__ = {}
 
         if not os.path.isfile(path):
-            logging.warning('cannot load config: ' + path)
+            logging.warning("cannot load config: "+path)
             return
-        
-        handle = file(path)
-        
+        handle = open(path, 'r')
+
         try:
-            c.__dict__ = json.load(handle)
+            self.__dict__ = json.load(handle)
         except ValueError as e:
-            logging.warning('invalid config format in file: ' + path)
+            logging.warning("invalid config format in file: "+path)
             raise e
 
-        return c
 
     def saveConf(self,path):
         '''save config to a file'''
-        json.dump(self.__dict__, file(path,'w'), ensure_ascii=False, indent=2)
+        json.dump(self.__dict__, file(path,"w"), ensure_ascii=False, indent=2)
 
     def __str__(self):
         return `self.__dict__`;
