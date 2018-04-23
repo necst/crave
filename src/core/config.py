@@ -11,14 +11,13 @@ class Configuration():
     the configuration strings are saved into the config variable
     the configuration is saved in the local data dictionary'''
 
-    def __init__(self, **kwargs):
+    def __init__(self, d):
         '''constructor'''
-        self.__dict__ = kwargs
 
-    def __init__(self, **options):
-        '''constructor passing a dictionary'''
-        self.__dict__ = options
-
+        self.__dict__ = d
+        for k, v in self.__dict__.iteritems():
+            if v.__class__ is dict:
+                self.__dict__[k] = Configuration(v)
 
     def __getattr__(self, name):
         if name in self.__dict__:
@@ -33,9 +32,8 @@ class Configuration():
 
         return self.__dict__[name]
 
-    def loadConf(self,path):
-
-        self.__dict__ = {}
+    @staticmethod
+    def load(path):
 
         if not os.path.isfile(path):
             logging.warning("cannot load config: "+path)
@@ -43,15 +41,17 @@ class Configuration():
         handle = open(path, 'r')
 
         try:
-            self.__dict__ = json.load(handle)
+            d = json.load(handle)
+            c = Configuration(d)
         except ValueError as e:
             logging.warning("invalid config format in file: "+path)
             raise e
 
+        return c
 
-    def saveConf(self,path):
+    def save(self,path):
         '''save config to a file'''
         json.dump(self.__dict__, file(path,"w"), ensure_ascii=False, indent=2)
 
     def __str__(self):
-        return `self.__dict__`;
+        return str(self.__dict__);

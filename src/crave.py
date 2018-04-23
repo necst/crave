@@ -19,8 +19,7 @@ def main():
         parser.error(e)
         sys.exit()
 
-    config = Configuration()
-    config.loadConf(args.config_file)
+    config = Configuration.load(args.config_file)
 
     tester_manager = TesterManager(config)
     # tester_manager.inittests()

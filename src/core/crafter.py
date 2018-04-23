@@ -1,3 +1,7 @@
+"""
+    crafter module
+"""
+
 import pefile
 import angr
 from copy import copy
