@@ -3,6 +3,7 @@ import logging
 from core import Tester
 from core.findplugins import find_subclasses
 from core.config import Configuration
+from core import Crafter
 
 logger = logging.getLogger('TesterManager')
 
@@ -26,8 +27,7 @@ class TesterManager:
             test_config['maldropper'] = self.config.samples.malware.dropper
             test_config['no_submit'] = self.config.no_submit
 
-            c = Configuration()
-            c.__dict__ = test_config
+            c = Configuration(test_config)
             t = [t for t in available_testers if 'emu' in t.__module__][0]
             self.testers.append((t, c))
 
@@ -40,35 +40,41 @@ class TesterManager:
                 test_config['packed'] = packed
                 test_config['no_submit'] = self.config.no_submit
 
-                c = Configuration()
-                c.__dict__ = test_config
+                c = Configuration(test_config)
                 t = [t for t in available_testers if 'heuristics_malware' in t.__module__][0]
                 self.testers.append((t, c))
 
         if 'heuristics_malware' in tests or 'all' in tests:
-            for crafted in crafed_samples:
+            crafter = Crafter(self.config.samples.malware.sample)
+            # crafted_samples = crafter.mutate()
+            crafted_samples = []
+
+            for crafted in crafted_samples:
                 test_config = {}
                 test_config['VT_API_KEY'] = self.config.VT_API_KEY
                 test_config['original'] = self.config.samples.malware.sample
                 test_config['mutated'] = crafted
                 test_config['no_submit'] = self.config.no_submit
 
-                c = Configuration()
-                c.__dict__ = test_config
+                c = Configuration(test_config)
                 t = [t for t in available_testers if 'heuristics_malware' in t.__module__][0]
                 self.testers.append((t, c))
 
         if 'heuristics_goodware' in tests or 'all' in tests:
-            test_config = {}
-            test_config['VT_API_KEY'] = self.config.VT_API_KEY
-            test_config['original'] = self.config.samples.goodware.sample
-            test_config['mutated'] = crafted
-            test_config['no_submit'] = self.config.no_submit
+            crafter = Crafter(self.config.samples.goodware.sample)
+            # crafted_samples = crafter.mutate()
+            crafted_samples = []
 
-            c = Configuration()
-            c.__dict__ = test_config
-            t = [t for t in available_testers if 'heuristics_goodware' in t.__module__][0]
-            self.testers.append((t, c))
+            for crafted in crafted_samples:
+                test_config = {}
+                test_config['VT_API_KEY'] = self.config.VT_API_KEY
+                test_config['original'] = self.config.samples.goodware.sample
+                test_config['mutated'] = crafted
+                test_config['no_submit'] = self.config.no_submit
+
+                c = Configuration(test_config)
+                t = [t for t in available_testers if 'heuristics_goodware' in t.__module__][0]
+                self.testers.append((t, c))
 
     def runtests(self):
         logger.info('Running Testers')

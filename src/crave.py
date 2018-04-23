@@ -22,7 +22,10 @@ def main():
     config = Configuration.load(args.config_file)
 
     tester_manager = TesterManager(config)
-    # tester_manager.inittests()
+    tester_manager.inittests()
+
+    from IPython import embed
+    embed()
 
 if __name__ == '__main__':
     main()
