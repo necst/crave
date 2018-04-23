@@ -5,9 +5,8 @@ import argparse
 
 from core.config import Configuration
 from core import Crafter
-from core import Tester
 from core import Decider
-from core.findplugins import find_subclasses
+from core import TesterManager
 
 def main():
     parser = argparse.ArgumentParser()
@@ -23,7 +22,8 @@ def main():
     config = Configuration()
     config.loadConf(args.config_file)
 
-    testers = find_subclasses('core/testers', Tester)
+    tester_manager = TesterManager(config)
+    # tester_manager.inittests()
 
 if __name__ == '__main__':
     main()

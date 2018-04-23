@@ -5,6 +5,7 @@
     "samples": {
         "goodware": {
             "sample": "base_samples/helloword.exe",
+            "dropper": "base_samples/droppergoodware.exe",
             "packed": {
                 "UPX": "base_samples/helloword_upx.exe",
                 "MEW": "base_samples/helloword_mew.exe"
