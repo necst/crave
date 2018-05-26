@@ -24,8 +24,11 @@ class Sample(object):
         in the database, we'll be ready to go and scan these,
         returns another instance of a Sample """
         if mutations is None:
-            l.warning('empty list of mutations for %s, default to all heuristics', self.filename)
+            l.warning(
+                    'empty list of mutations for %s, default to all heuristics',
+                    self.filename)
+
             mutations = self.project.crafter.mutations
 
         for m in mutations:
-            self.project.crafter(self, m)
+            yield self.project.crafter(self, m)

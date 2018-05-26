@@ -18,11 +18,11 @@ class PE(object):
         self.sample = sample
         self.pe = pefile.PE(sample)
         # temporary file to mutate the original sample
-        self.load_sections()
         self.workpe = None
-        self.angr_pj = angr.Project(infile)
+        self.angr_pj = angr.Project(sample)
         self.angr_sections = []
         self.sections_arch = []
+        self.load_sections()
 
     def load_sections(self):
         """ load section as shellcode so we can
@@ -51,7 +51,7 @@ class PE(object):
             k = ks.Ks(ks.KS_ARCH_X86, ks.KS_MODE_32)
             encoding, count = k.asm(instructions)
         except ks.KsError as e:
-            print "Error! %s", e
+            l.error("Error! %s", e)
             raise
 
         if not self.workpe.set_bytes_at_rva(va, ''.join(map(chr, encoding))):

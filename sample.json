@@ -1,0 +1,18 @@
+{
+   "goodware": {
+       "sample": "base_samples/helloworld.exe",
+       "dropper": "base_samples/droppergoodware.exe",
+       "packed": {
+           "UPX": "base_samples/helloworld_upx.exe",
+           "MEW": "base_samples/helloworld_mew.exe"
+       }
+   },
+   "malware": {
+       "sample": "base_samples/virut",
+       "dropper": "base_samples/virut_dropper",
+       "packed": {
+           "UPX": "base_samples/virut_upx",
+           "MEW": "base_samples/virut_mew"
+       }
+   }
+}

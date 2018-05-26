@@ -83,7 +83,6 @@ class CraftFactory(object):
         # last entry is to fix checksum or not
         if permutations is False:
             self.mutations = mutations + [Crafter.update_checksum]
-            print self.mutations
             return
 
         # permutate all the things! \o/
@@ -101,5 +100,5 @@ class CraftFactory(object):
 
         self.mutations = permutate(list(mutations_dict.itervalues()))
 
-    def __call__(self, sample):
+    def __call__(self, sample, mutation):
         return Crafter(self.project, sample)
