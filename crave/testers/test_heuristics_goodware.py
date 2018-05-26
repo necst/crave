@@ -9,12 +9,12 @@ from core.vt import Scanner
 from core.utils.colors import green
 
 
-class TestHeuristicsGoodware(Tester):
+class HeuristicsGoodware(Tester):
     # def __init__(self, key, original, mutated, no_submit=False):
-    def __init__(self, config):
+    def __init__(self, sample, crafted):
         self.key = config.VT_API_KEY
-        self.original = config.original
-        self.mutated = config.mutated
+        self.original = config.samples.goodware.sample
+        self.mutated = crafted
         self.no_submit = config.no_submit
         self.original_report = None
         self.mutated_report = None

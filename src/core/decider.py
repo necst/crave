@@ -1,2 +1,0 @@
-class Decider:
-    pass

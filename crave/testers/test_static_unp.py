@@ -13,8 +13,11 @@ from core.labelizer import comparelabels
 class TestStaticUnp(Tester):
     # def __init__(self, key, payload, packed, no_submit=False):
     def __init__(self, config):
+        test_config = {}
+        test_config['packed'] = packed
+
         self.key = config.VT_API_KEY
-        self.payload = config.payload
+        self.payload = self.config.samples.malware.sample
         self.packed = config.packed
         self.no_submit = config.no_submit
         self.payload_report = None

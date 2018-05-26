@@ -10,14 +10,15 @@ from core.utils.colors import green
 from core.labelizer import comparelabels
 
 
-class TestEmu(Tester):
+class Emulation(Tester):
     # def __init__(self, key, gooddropper, payload, maldropper, no_submit=False):
     def __init__(self, config):
         self.key = config.VT_API_KEY
-        self.gooddropper = config.gooddropper
-        self.payload = config.payload
-        self.maldropper = config.maldropper
+        self.gooddropper = config.samples.goodware.dropper
+        self.payload = config.samples.malware.sample
+        self.maldropper = config.samples.malware.dropper
         self.no_submit = config.no_submit
+
         self.gooddropper_report = None
         self.payload_report = None
         self.maldropper_report = None
