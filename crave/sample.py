@@ -1,13 +1,17 @@
+import logging
+import os
+from crave.crafter.pe import PE
+
+l = logging.getLogger('crave.sample')
+
 class Sample(object):
 
-    def __init__(project, filename):
+    def __init__(self, project, filename):
         self.project = project
-        self.filename = filename
-
-        # XXX: should we move in the PE?
-        # we might want to store stuff in a proper DB
-        # with all the modifications in a parsable format
-        # 'deserialize' PE?
+        self.file = filename
+        self.filename = os.path.basename(filename)
+        self.dir = os.path.dirname(filename)
+        self.pe = PE(filename)
 
     def put(self):
         self.project.db.put_sample()
@@ -15,11 +19,13 @@ class Sample(object):
     def get(self):
         self.project.db.get_sample()
 
-    def craft(self, mutation=None):
+    def craft(self, mutations=None):
         """ apply all possible mutations to the sample and store
-        in the database, we'll be ready to go and scan these """
-        if mutation is not None:
-            pass
+        in the database, we'll be ready to go and scan these,
+        returns another instance of a Sample """
+        if mutations is None:
+            l.warning('empty list of mutations for %s, default to all heuristics', self.filename)
+            mutations = self.project.crafter.mutations
 
-        for m in self.project.Crafter.mutations:
-            self.c
+        for m in mutations:
+            self.project.crafter(self, m)

@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import argparse
+from itertools import chain
 
 from crave import Project
 from crave.cravedb import VedisBackend
@@ -22,40 +23,30 @@ def craft_it(project, base_samples):
 
     c = project
     name = project.name
-    # craft all possibly interesting combinations of heuristics
-    base_goodware = c.sample('base_samples/virut', Sample.MALWARE)
-    base_malware = c.sample('base_samples/helloworld.exe', Sample.GOODWARE)
 
-    # craft the samples
+    # add base samples goodware/malware
+    goodware = c.add_goodware(base_samples['goodware']['sample'])
+    malware = c.add_malware(base_samples['malware']['sample'])
 
-    for s in base_goodware.craft_heuristiscs():
-        s.put()
+    # craft samples to test heuristics
 
-    for s in base_malware.craft_heuristics():
-        s.put()
+    for s in chain(goodware.craft(), malware.craft()):
+        print s
+        crafted = s
 
-    #scanner = Scanner(config.VT_API_KEY)
-    c.scan()    # VirusTotal scan engine
+    # right now dropper generation is automated only
+    # with mingw, we might want to use it at a later stage
+    # (compilation options seems to able to change recognition too)
+    # add base samples to test emu (dropper)
 
-    for r in c.infer():
-        print "discovered %s" % r
+    # same for packers, for now let's load samples generated manually
+    # we'll automate the packing process later
+    # add base samples to test packers
 
-    # first we store stuff in db and 
-    # prepare the samples, we use the vedis db to
-    # store stuff and query fast (? heopfully)
-
-    #tester_manager = TesterManager(config)
-    #tester_manager.inittests()
-
-    ## set up a test ...
-    #for s in crafted:
-
-    #    scanner.submit()
-
-def scan_it():
+def scan_it(project):
     pass
 
-def infer_it():
+def infer_it(project):
     pass
 
 
@@ -89,8 +80,10 @@ def main():
         with open(args.base_samples) as f:
             base_samples = json.load(f)
         craft_it(project, base_samples)
-    # scan_it()
-    # infer_it()
+    elif args.subcommand == 'scan':
+        scan_it(project)
+    elif args.subcommand == 'infer':
+        infer_it(project)
 
 if __name__ == '__main__':
     main()

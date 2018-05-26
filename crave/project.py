@@ -1,5 +1,7 @@
 import os
 from crafter import CraftFactory
+from sample import Sample
+import shutil
 
 class Project(object):
 
@@ -10,23 +12,28 @@ class Project(object):
 
         self.name = name
         self.outdir = name
+        self.crafter = CraftFactory(self)
 
-        if os.path.isdir(self.name):
-            # an older project exists, we're adding up to it
-            # open stuff like dbs! (:
-            pass
-        else:
-            # setup a new crave project in the given dir
-            os.mkdir(self.name)
+        if os.path.exists(name):
+            shutil.rmtree(name)
+        os.mkdir(name)
+
+        self.outdir = name
 
         self.db = db_opts['backend'](self)
 
         self.crafter = CraftFactory(self)
 
+    def add_goodware(self, sample):
+        return self.add_sample(sample, 'goodware')
+
+    def add_malware(self, sample):
+        return self.add_sample(sample, 'malware')
+
     def add_sample(self, sample, tags):
         """ tags will define what kind of sample we are talking about,
         for example 'goodware', 'malware', or the set of mutations applied to it """
-        pass
+        return Sample(self, sample)
 
     def scan():
         pass

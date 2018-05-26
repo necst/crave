@@ -14,10 +14,11 @@ class PE(object):
     to be applied on a sample PE file
     """
 
-    def __init__(sample):
+    def __init__(self, sample):
         self.sample = sample
         self.pe = pefile.PE(sample)
         # temporary file to mutate the original sample
+        self.load_sections()
         self.workpe = None
         self.angr_pj = angr.Project(infile)
         self.angr_sections = []
