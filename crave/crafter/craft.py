@@ -18,24 +18,25 @@ class Crafter(object):
     def __init__(self, project, sample):
         self.project = project
         self.sample = sample
+        self.pe = PE(sample.file)
 
     def mutation_sectionchar_rwx(self):
-        return self.pe.modify_section_characteristics_rwx()
+        self.pe.modify_section_characteristics_rwx()
 
     def mutation_sectionname_random(self):
-        return self.pe.modify_section_names(rand=True)
+        self.pe.modify_section_names(rand=True)
 
     def mutation_sectionname_randomdot(self):
-        return self.pe.modify_section_names(rand=True, with_dot=True)
+        self.pe.modify_section_names(rand=True, with_dot=True)
 
     def mutation_sectionname_infer(self):
-        return self.pe.modify_section_names()
+        self.pe.modify_section_names()
 
     def mutation_code_entryret(self):
-        return self.pe.patch_code(va=self.pe.OPTIONAL_HEADER.AddressOfEntryPoint)
+        self.pe.patch_code(va=self.pe.OPTIONAL_HEADER.AddressOfEntryPoint)
 
     def update_checksum(self):
-        return self.pe.update_checksum()
+        self.pe.update_checksum()
 
     def _craft_all(self):
         results = {}
@@ -45,9 +46,6 @@ class Crafter(object):
             mut_names = '_'.join([n for n,f in mutate_funcs if f is not None])
             if mut_names:
                 name += '_' + mut_names
-
-            self.pe.write(name)
-            self.workpe = pefile.PE(name)
 
             for n, f in mutate_funcs:
                 if f is not None:
@@ -101,4 +99,7 @@ class CraftFactory(object):
         self.mutations = permutate(list(mutations_dict.itervalues()))
 
     def __call__(self, sample, mutation):
-        return Crafter(self.project, sample)
+        crafter = Crafter(self.project, sample)
+        mutation(crafter)
+        import hashlib
+        return hashlib.sha256(crafter.pe.write()).hexdigest()

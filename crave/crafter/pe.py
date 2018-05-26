@@ -3,22 +3,23 @@ import pefile
 import angr
 import keystone as ks
 import random
+import string
 
 l = logging.getLogger('crave.crafter.pe')
 
 IMAGE_SIZEOF_SHORT_NAME = 8
 
 
-class PE(object):
+class PE(pefile.PE):
     """ this class builds on pefile, enables a set of pre-defined mutations
     to be applied on a sample PE file
     """
 
     def __init__(self, sample):
+
+        super(PE, self).__init__(sample)
         self.sample = sample
-        self.pe = pefile.PE(sample)
         # temporary file to mutate the original sample
-        self.workpe = None
         self.angr_pj = angr.Project(sample)
         self.angr_sections = []
         self.sections_arch = []
@@ -31,7 +32,7 @@ class PE(object):
         for the emulation test
         """
 
-        for s, i in zip(self.pe.sections, range(0, len(self.pe.sections))):
+        for s, i in zip(self.sections, range(0, len(self.sections))):
             dd = s.get_data(s.VirtualAddress, s.SizeOfRawData)
             try:
                 a = angr.project.load_shellcode(dd, 'x86')
@@ -54,11 +55,11 @@ class PE(object):
             l.error("Error! %s", e)
             raise
 
-        if not self.workpe.set_bytes_at_rva(va, ''.join(map(chr, encoding))):
+        if not self.set_bytes_at_rva(va, ''.join(map(chr, encoding))):
             raise Exception('Cannot patch bytes at %x!', va)
 
     def modify_section_characteristics_rwx(self):
-        for s in self.workpe.sections:
+        for s in self.sections:
             s.IMAGE_SCN_MEM_READ = True
             s.IMAGE_SCN_MEM_WRITE = True
             s.IMAGE_SCN_MEM_EXECUTE = True
@@ -79,7 +80,7 @@ class PE(object):
                 name = '.' + name[1:]
             return name
 
-        sections = self.workpe.sections
+        sections = self.sections
 
         for s, i in zip(sections, range(0, len(sections))):
             # random
@@ -96,5 +97,5 @@ class PE(object):
                 s.Name = '.data'.ljust(len(s.Name), '\x00')
 
     def update_checksum(self):
-        self.workpe.OPTIONAL_HEADER.CheckSum = self.workpe.generate_checksum()
+        self.OPTIONAL_HEADER.CheckSum = self.generate_checksum()
 
