@@ -7,6 +7,7 @@ import os
 import shutil
 from pe import PE
 from crave.utils.permutation import OrderedDefaultDict, permutate
+from crave.sample import Sample
 
 l = logging.getLogger("crave.crafter")
 
@@ -99,7 +100,12 @@ class CraftFactory(object):
         self.mutations = permutate(list(mutations_dict.itervalues()))
 
     def __call__(self, sample, mutation):
+        # setup crafter and mutate
         crafter = Crafter(self.project, sample)
         mutation(crafter)
-        import hashlib
-        return hashlib.sha256(crafter.pe.write()).hexdigest()
+
+        h = sha256(crafter.pe.write()).hexdigest()
+
+        path = os.path.join(self.project.outdir, h)
+        crafter.pe.write(path)
+        return Sample(self.project, path)

@@ -14,10 +14,12 @@ class Sample(object):
         self.pe = PE(filename)
 
     def put(self):
-        self.project.db.put_sample()
+        #self.project.db.put_sample()
+        pass
 
     def get(self):
-        self.project.db.get_sample()
+        #self.project.db.get_sample()
+        pass
 
     def craft(self, mutations=None):
         """ apply all possible mutations to the sample and store

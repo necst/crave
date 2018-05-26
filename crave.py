@@ -31,8 +31,7 @@ def craft_it(project, base_samples):
     # craft samples to test heuristics
 
     for s in chain(goodware.craft(), malware.craft()):
-        print s
-        crafted = s
+        s.put()
 
     # right now dropper generation is automated only
     # with mingw, we might want to use it at a later stage
