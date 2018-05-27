@@ -1,6 +1,5 @@
 import logging
 import pefile
-import angr
 import keystone as ks
 import random
 import string
@@ -16,7 +15,7 @@ class PE(pefile.PE):
     """
 
     def __init__(self, sample):
-
+        import angr
         super(PE, self).__init__(sample)
         self.sample = sample
         # temporary file to mutate the original sample
@@ -47,7 +46,7 @@ class PE(pefile.PE):
 
     def patch_code(self, instructions='ret;',va=0):
         """ put instruction(s), at the end of the basic block specified"""
-        # get capstone instruction at the end of the basic_block
+        #TODO: get capstone instruction at the end of the basic_block
         try:
             k = ks.Ks(ks.KS_ARCH_X86, ks.KS_MODE_32)
             encoding, count = k.asm(instructions)

@@ -6,7 +6,7 @@ import argparse
 from itertools import chain
 
 from crave import Project
-from crave.cravedb import VedisBackend
+
 
 l = logging.getLogger('crave.crave')
 
@@ -25,8 +25,8 @@ def craft_it(project, base_samples):
     name = project.name
 
     # add base samples goodware/malware
-    goodware = c.add_goodware(base_samples['goodware']['sample'])
-    malware = c.add_malware(base_samples['malware']['sample'])
+    goodware = c.goodware(base_samples['goodware']['sample'])
+    malware = c.malware(base_samples['malware']['sample'])
 
     # craft samples to test heuristics
 
@@ -73,7 +73,7 @@ def main():
         parser.error(e)
         sys.exit()
 
-    project = Project(args.name, {'backend': VedisBackend})
+    project = Project(args.name, {'backend': 'vedis'})
 
     if args.subcommand == 'craft':
         with open(args.base_samples) as f:

@@ -5,9 +5,7 @@ import logging
 from hashlib import sha256
 import os
 import shutil
-from pe import PE
 from crave.utils.permutation import OrderedDefaultDict, permutate
-from crave.sample import Sample
 
 l = logging.getLogger("crave.crafter")
 
@@ -17,6 +15,7 @@ class Crafter(object):
     dicts (or db entries) """
 
     def __init__(self, project, sample):
+        from pe import PE
         self.project = project
         self.sample = sample
         self.pe = PE(sample.file)
@@ -108,4 +107,8 @@ class CraftFactory(object):
 
         path = os.path.join(self.project.outdir, h)
         crafter.pe.write(path)
-        return Sample(self.project, path)
+
+        l.debug('create sample %s, mutation(s): %s',
+                h, ' '.join(mutation.__name__.split('_')[-2:]))
+        # TODO: add tags (i.e. mutations) to sample
+        return self.project.sample(path, [])

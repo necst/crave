@@ -1,36 +1,38 @@
 import os
-from crafter import CraftFactory
-from sample import Sample
 import shutil
+from .crafter import CraftFactory
+from .sample import Sample
+from .cravedb.cravedb import DBFactory
+
 
 class Project(object):
 
-    def __init__(self, name=None, db_opts = {}):
+    def __init__(self, name=None, db_opts={}):
         # that's the dir were we will dump
         # the samples (and a copy of the vedis db)
         # until we support other backends
 
         self.name = name
         self.outdir = name
+        # TODO:  use an in-memory db for quick tests
         self.crafter = CraftFactory(self)
 
-        if os.path.exists(name):
-            shutil.rmtree(name)
-        os.mkdir(name)
+        if not os.path.exists(name):
+            os.mkdir(name)
 
         self.outdir = name
 
-        self.db = db_opts['backend'](self)
+        self.db = DBFactory(self, db_opts)
 
         self.crafter = CraftFactory(self)
 
-    def add_goodware(self, sample):
-        return self.add_sample(sample, 'goodware')
+    def goodware(self, sample):
+        return self.sample(sample, 'goodware')
 
-    def add_malware(self, sample):
-        return self.add_sample(sample, 'malware')
+    def malware(self, sample):
+        return self.sample(sample, 'malware')
 
-    def add_sample(self, sample, tags):
+    def sample(self, sample, tags):
         """ tags will define what kind of sample we are talking about,
         for example 'goodware', 'malware', or the set of mutations applied to it """
         return Sample(self, sample)

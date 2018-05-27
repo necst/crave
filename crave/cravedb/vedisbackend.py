@@ -1,17 +1,22 @@
-import os
+from .cravedb import DBPlugin
 from vedis import Vedis
+import logging
+import os
 
+l = logging.getLogger('crave.cravedb.vedisbackend')
+DB_NAME = 'crave.db'
 
-class VedisBackend():
+class VedisBackend(DBPlugin):
 
-    def __init__(self, project):
-        self._project = project
-        self.name = os.path.join(project.outdir, 'crave.db') if project.outdir is not None else ':mem:'
+    def connect(self):
+        path = os.path.join(self.project.outdir, DB_NAME)
+        print path
+        self._db = Vedis(path)
 
-        self._db = Vedis(self.name)
+    def get_sample(self, sample):
+        db = self._db
 
-    def get_sample(self, sample_hash):
-        pass
+        db[sample.sha256] = sample
 
     def put_sample(self, sample):
 
