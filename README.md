@@ -1,16 +1,23 @@
-# crAVe
+# About crAVe
 
-crAVe is a framework to automatically test and explore the capabilities of generic AV engines.
+crAVe is a framework developer at [NECSTLab](http://necst.it)  to automatically test and explore the capabilities of generic AV engines.
 
-crAVe is a research project developed at [NECSTLab](http://necst.it).
+Its built upon awesome libraries:
+  + [angr](https://github.com/angr/angr)
+  + [capstone engine](http://www.capstone-engine.org)
+  + [keysone engine](http://www.keystone-engine.org)
+  + [pefile](https://github.com/erocarrera/pefile)
+  + [vedis-python](https://github.com/coleifer/vedis-python)
+
 
 ## Research Paper
 
 We will present the findings of this work in a research paper:
 
-**Toward Systematically Exploring Antivirus Engines** (short paper)   
-Davide Quarta, Federico Salvioni, Andrea Continella, Stefano Zanero.   
+[**Toward Systematically Exploring Antivirus Engines** (short paper)](https://github.com/necst/crave/raw/master/crave.pdf)
+Davide Quarta, Federico Salvioni, Andrea Continella, Stefano Zanero.
 *In Proceedings of the Conference on Detection of Intrusions and Malware and Vulnerability Assessment (DIMVA), June 2018*
+
 
 ## Introduction
 
