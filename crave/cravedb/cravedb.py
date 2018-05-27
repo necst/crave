@@ -37,7 +37,6 @@ class DBFactory(object):
             binst = VedisBackend()
 
         binst._init_db(project, db_opts)
-        print 'FAAAAAAAAAAAAAAAAAAAAAACK'
         binst.connect()
 
         return binst
