@@ -10,8 +10,8 @@ class VedisBackend(DBPlugin):
 
     def connect(self):
         path = os.path.join(self.project.outdir, DB_NAME)
-        print path
         self._db = Vedis(path)
+        self._db['init'] = True
 
     def get_sample(self, sample):
         db = self._db
