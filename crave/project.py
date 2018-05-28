@@ -21,9 +21,7 @@ class Project(object):
             os.mkdir(name)
 
         self.outdir = name
-
         self.db = DBFactory(self, db_opts)
-
         self.crafter = CraftFactory(self)
 
     def goodware(self, sample):
@@ -32,7 +30,7 @@ class Project(object):
     def malware(self, sample):
         return self.sample(sample, 'malware')
 
-    def sample(self, sample, tags):
+    def sample(self, sample, tags=[]):
         """ tags will define what kind of sample we are talking about,
         for example 'goodware', 'malware', or the set of mutations applied to it """
         return Sample(self, sample)

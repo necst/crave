@@ -111,4 +111,4 @@ class CraftFactory(object):
         l.debug('create sample %s, mutation(s): %s',
                 h, ' '.join(mutation.__name__.split('_')[-2:]))
         # TODO: add tags (i.e. mutations) to sample
-        return self.project.sample(path, [])
+        return self.project.sample(path)

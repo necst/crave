@@ -1,6 +1,7 @@
 import logging
 import os
 from crave.crafter.pe import PE
+from hashlib import sha256
 
 l = logging.getLogger('crave.sample')
 
@@ -12,9 +13,10 @@ class Sample(object):
         self.filename = os.path.basename(filename)
         self.dir = os.path.dirname(filename)
         self.pe = PE(filename)
+        self.sha256 = sha256(self.pe.write())
 
     def put(self):
-        #self.project.db.put_sample()
+        self.project.db.put_sample(self)
         pass
 
     def get(self):

@@ -2,6 +2,7 @@ from .cravedb import DBPlugin
 from vedis import Vedis
 import logging
 import os
+import json
 
 l = logging.getLogger('crave.cravedb.vedisbackend')
 DB_NAME = 'crave.db'
@@ -20,11 +21,12 @@ class VedisBackend(DBPlugin):
 
     def put_sample(self, sample):
 
-        sample.filename
-        sample.hash
-        sample.mutationchain
+        h = self._db.Hash('samples')
 
-        pass
+        h[sample.sha256] = json.dumps({
+            'filename': sample.filename,
+            'mutations': []})
+
 
     def get_scan():
         pass

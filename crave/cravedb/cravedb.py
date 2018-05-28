@@ -12,13 +12,6 @@ class DBPlugin(object):
         self.project = project
         self.db_opts = db_opts
 
-    def __getattr__(self, name):
-        print self.__dict__
-        print name
-        if name in self.__dict__:
-            return self.__dict__[name]
-        return None
-
     def connect(self):
         raise NotImplemented()
 
