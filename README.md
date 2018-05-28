@@ -1,6 +1,6 @@
 # About crAVe
 
-crAVe is a framework developer at [NECSTLab](http://necst.it)  to automatically test and explore the capabilities of generic AV engines.
+crAVe is a framework developed at [NECSTLab](http://necst.it)  to automatically test and explore the capabilities of generic AV engines.
 
 Its built upon awesome libraries:
   + [angr](https://github.com/angr/angr)
