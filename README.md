@@ -14,8 +14,8 @@ Its built upon awesome libraries:
 
 We will present the findings of this work in a research paper:
 
-[**Toward Systematically Exploring Antivirus Engines** (short paper)](https://github.com/necst/crave/raw/master/crave.pdf)
-Davide Quarta, Federico Salvioni, Andrea Continella, Stefano Zanero.
+[**Toward Systematically Exploring Antivirus Engines** (short paper)](https://github.com/necst/crave/raw/master/crave.pdf)  
+Davide Quarta, Federico Salvioni, Andrea Continella, Stefano Zanero.  
 *In Proceedings of the Conference on Detection of Intrusions and Malware and Vulnerability Assessment (DIMVA), June 2018*
 
 
