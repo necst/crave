@@ -3,7 +3,7 @@ expanded later to support other databases """
 import os
 import logging
 
-#l = logging.getLogger('crave.cravedb')
+l = logging.getLogger('crave.cravedb')
 
 
 class DBPlugin(object):
@@ -34,11 +34,6 @@ class DBFactory(object):
 
         return binst
 
-
-    def __init__(self, project, db_opts):
-        self.project = project
-        self.name = os.path.join(project.outdir, 'crave.db') if project.outdir is not None else ':mem:'
-        return super(DB, self).__init__()
 
     def get_sample(self, sample_hash):
         raise NotImplemented()

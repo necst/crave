@@ -4,19 +4,21 @@ import sys
 import json
 import argparse
 from itertools import chain
+from crave.utils import logs  # enable default logger
+
+l = logging.getLogger('crave.crave')
 
 from crave import Project
 
 
-l = logging.getLogger('crave.crave')
-
-# tests currently "available"
-# goodware -> heuristics ~ +detections
-# malware -> heuristics ~ -detections
-# goodware -> packed ~ these are matching the packer!
-# malware -> packed -> break_oep ~ test static unpacking
-# goodware -> dropper (recognizable dropper?)
-# malware -> dropper (on demand scan == test emulation!)
+""" tests currently "available"
+  + goodware -> heuristics ~ +detections
+  + malware -> heuristics ~ -detections
+  + goodware -> packed ~ these are matching the packer!
+  + malware -> packed -> break_oep ~ test static unpacking
+  + goodware -> dropper (recognizable dropper?)
+  + malware -> dropper (on demand scan == test emulation!)
+"""
 
 
 def craft_it(project, base_samples):
@@ -42,8 +44,10 @@ def craft_it(project, base_samples):
     # we'll automate the packing process later
     # add base samples to test packers
 
+
 def scan_it(project):
     pass
+
 
 def infer_it(project):
     pass
@@ -53,19 +57,26 @@ def main():
 
     # create the top-level parser
     parser = argparse.ArgumentParser(prog='PROG')
-    parser.add_argument('name', type=str, help='Name of the crave project (dir where to store results)')
-    subparsers = parser.add_subparsers(help='Available crave commands', dest='subcommand')
+
+    parser.add_argument('--vt-key', type=str, help='VirusTotal API Key')
+
+    parser.add_argument('name', type=str,
+                        help='Name of the crave project (dir where to store results)')
+    subparsers = parser.add_subparsers(
+        help='Available crave commands', dest='subcommand')
 
     # create the parser for the "a" command
     parser_a = subparsers.add_parser('craft', help='craft samples')
-    parser_a.add_argument('base_samples', type=str, help='base samples json file')
+    parser_a.add_argument('base_samples', type=str,
+                          help='base samples json file')
 
     # create the parser for the "b" command
-    parser_b = subparsers.add_parser('scan', help='Scan with virustotal the crafted samples')
-    parser_b.add_argument('--vt-key', type=str, help='VirusTotal API Key')
+    parser_b = subparsers.add_parser(
+        'scan', help='Scan with virustotal the crafted samples')
 
-    parser_b = subparsers.add_parser('infer', help='Infer AV capabilities from scan results')
-    parser_b.add_argument('--baz', choices='XYZ', help='baz help')
+    parser_c = subparsers.add_parser(
+        'infer', help='Infer AV capabilities from scan results')
+    parser_c.add_argument('--baz', choices='XYZ', help='baz help')
 
     try:
         args = parser.parse_args()
@@ -73,7 +84,7 @@ def main():
         parser.error(e)
         sys.exit()
 
-    project = Project(args.name, {'backend': 'vedis'})
+    project = Project(args.name, args.vt_key)
 
     if args.subcommand == 'craft':
         with open(args.base_samples) as f:
@@ -83,6 +94,7 @@ def main():
         scan_it(project)
     elif args.subcommand == 'infer':
         infer_it(project)
+
 
 if __name__ == '__main__':
     main()

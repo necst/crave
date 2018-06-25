@@ -12,7 +12,6 @@ class VedisBackend(DBPlugin):
     def connect(self):
         path = os.path.join(self.project.outdir, DB_NAME)
         self._db = Vedis(path)
-        self._db['init'] = True
 
     def get_sample(self, sample):
         db = self._db
@@ -21,12 +20,13 @@ class VedisBackend(DBPlugin):
 
     def put_sample(self, sample):
 
-        h = self._db.Hash('samples')
+        db = self._db
 
-        h[sample.sha256] = json.dumps({
-            'filename': sample.filename,
-            'mutations': []})
+        samples = db.Hash('samples')
+        samples[sample.sha256] = sample.to_json()
 
+        tags = db.Hash('tags')
+        samples[sample.tag] = sample.sha256
 
     def get_scan():
         pass
