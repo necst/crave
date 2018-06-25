@@ -27,9 +27,9 @@ class VedisBackend(DBPlugin):
 
         tags = db.Hash('tags')
         samples[sample.tag] = sample.sha256
+        
+        db.commit()
 
-    def get_scan():
-        pass
-
-    def put_scan():
-        pass
+    @property
+    def all_samples(self):
+        return self._db['samples']

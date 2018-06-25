@@ -13,8 +13,20 @@ class DBPlugin(object):
         self.db_opts = db_opts
 
     def connect(self):
-        raise NotImplemented()
+        raise NotImplementedError()
 
+    def get_sample(self, sample_hash):
+        raise NotImplementedError()
+
+    def get_avresults(self, sample_hash):
+        raise NotImplementedError()
+
+    def put_sample(self, sample):
+        raise NotImplementedError()
+
+    @property
+    def all_samples(self):
+        raise NotImplementedError()
 
 
 class DBFactory(object):
@@ -33,15 +45,5 @@ class DBFactory(object):
         binst.connect()
 
         return binst
-
-
-    def get_sample(self, sample_hash):
-        raise NotImplemented()
-
-    def get_avresults(self, sample_hash):
-        raise NotImplemented()
-
-    def store_sample(self, sample):
-        raise NotImplemented()
 
 from .vedisbackend import VedisBackend

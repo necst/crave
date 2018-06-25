@@ -46,7 +46,7 @@ def craft_it(project, base_samples):
 
 
 def scan_it(project):
-    pass
+    print project.scanner.scan_all()
 
 
 def infer_it(project):
@@ -57,7 +57,6 @@ def main():
 
     # create the top-level parser
     parser = argparse.ArgumentParser(prog='PROG')
-
     parser.add_argument('--vt-key', type=str, help='VirusTotal API Key')
 
     parser.add_argument('name', type=str,
@@ -76,7 +75,7 @@ def main():
 
     parser_c = subparsers.add_parser(
         'infer', help='Infer AV capabilities from scan results')
-    parser_c.add_argument('--baz', choices='XYZ', help='baz help')
+    # parser_c.add_argument('--baz', choices='XYZ', help='baz help')
 
     try:
         args = parser.parse_args()

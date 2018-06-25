@@ -22,14 +22,13 @@ class Sample(object):
         self.filename = os.path.basename(filename)
         self.dir = os.path.dirname(filename)
         self.pe = PE(filename)
-        self.sha256 = sha256(self.pe.write())
+        self.sha256 = sha256(self.pe.write()).hexdigest()
         self.tag = tag
         self.mutations = mutations
         self.base_sample = base_sample
 
     def put(self):
         self.project.db.put_sample(self)
-        pass
 
     def get(self):
         #self.project.db.get_sample()
