@@ -1,7 +1,7 @@
 import os
 import shutil
 from .crafter import CraftFactory
-from .sample import Sample
+from .sample import Sample, TAGS
 from .cravedb.cravedb import DBFactory
 from .plugin import PluginFactory
 from .scanner import Scanner
@@ -32,15 +32,15 @@ class Project(object):
         self.scanner = PluginFactory(Scanner, self, scanner_opts)
 
     def goodware(self, sample):
-        return self.sample(sample, 'goodware')
+        return self.sample(sample, tag=TAGS.GOODWARE)
 
     def malware(self, sample):
-        return self.sample(sample, 'malware')
+        return self.sample(sample, tag=TAGS.MALWARE)
 
-    def sample(self, sample, tags=[]):
+    def sample(self, sample, tag=[]):
         """ tags will define what kind of sample we are talking about,
         for example 'goodware', 'malware', or the set of mutations applied to it """
-        return Sample(self, sample)
+        return Sample(self, sample, tag)
 
     def scan():
         pass

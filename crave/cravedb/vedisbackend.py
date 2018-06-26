@@ -25,11 +25,13 @@ class VedisBackend(DBPlugin):
         samples = db.Hash('samples')
         samples[sample.sha256] = sample.to_json()
 
-        tags = db.Hash('tags')
-        samples[sample.tag] = sample.sha256
-        
+        # keep reference of the sample for each tag :)
+        print sample.tag
+        tag = db.Hash(sample.tag)
+        tag[sample.tag] = sample.sha256
+
         db.commit()
 
     @property
     def all_samples(self):
-        return self._db['samples']
+        return self._db.Hash('samples')

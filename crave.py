@@ -23,12 +23,14 @@ from crave import Project
 
 def craft_it(project, base_samples):
 
-    c = project
+    p = project
     name = project.name
 
     # add base samples goodware/malware
-    goodware = c.goodware(base_samples['goodware']['sample'])
-    malware = c.malware(base_samples['malware']['sample'])
+    goodware = p.goodware(base_samples['goodware']['sample'])
+    malware = p.malware(base_samples['malware']['sample'])
+    goodware.put()
+    malware.put()
 
     # craft samples to test heuristics
 

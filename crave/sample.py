@@ -16,14 +16,14 @@ class TAGS():
 
 class Sample(object):
 
-    def __init__(self, project, filename, tag=TAGS.UNKNOWN, mutations=[], base_sample=None):
+    def __init__(self, project, filename, tag=(TAGS.UNKNOWN,), mutations=[], base_sample=None):
         self.project = project
         self.file = filename
         self.filename = os.path.basename(filename)
         self.dir = os.path.dirname(filename)
         self.pe = PE(filename)
         self.sha256 = sha256(self.pe.write()).hexdigest()
-        self.tag = tag
+        self.tag = "_".join(tag)
         self.mutations = mutations
         self.base_sample = base_sample
 
