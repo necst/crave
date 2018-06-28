@@ -6,28 +6,30 @@ from hashlib import sha256
 l = logging.getLogger('crave.sample')
 
 class TAGS():
-    MALWARE = 'malware',
-    GOODWARE = 'goodware',
-    HEUR = 'heur',
-    PACK = 'pack',
-    DROP = 'drop',
+    MALWARE = 'malware'
+    GOODWARE = 'goodware'
+    HEUR = 'heur'
+    PACK = 'pack'
+    DROP = 'drop'
     UNKNOWN = 'unknown'
 
 
 class Sample(object):
 
-    def __init__(self, project, filename, tag=(TAGS.UNKNOWN,), mutations=[], base_sample=None):
+    def __init__(self, project, filename, tag=TAGS.UNKNOWN, mutations=[], base_sample=None):
         self.project = project
         self.file = filename
         self.filename = os.path.basename(filename)
         self.dir = os.path.dirname(filename)
         self.pe = PE(filename)
         self.sha256 = sha256(self.pe.write()).hexdigest()
-        self.tag = "_".join(tag)
+        self.tag = tag
+
         self.mutations = mutations
         self.base_sample = base_sample
 
     def put(self):
+        l.debug('Adding sample %s to database > %s', self.sha256, self.tag)
         self.project.db.put_sample(self)
 
     def get(self):
@@ -40,8 +42,8 @@ class Sample(object):
         returns another instance of a Sample """
         if mutations is None:
             l.warning(
-                    'empty list of mutations for %s, default to all heuristics',
-                    self.filename)
+                    'Empty list of mutations for %s (%s), default to all heuristics',
+                    self.filename, self.sha256)
 
             mutations = self.project.crafter.mutations
 

@@ -26,7 +26,6 @@ class VedisBackend(DBPlugin):
         samples[sample.sha256] = sample.to_json()
 
         # keep reference of the sample for each tag :)
-        print sample.tag
         tag = db.Hash(sample.tag)
         tag[sample.tag] = sample.sha256
 

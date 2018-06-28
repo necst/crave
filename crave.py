@@ -30,7 +30,7 @@ def craft_it(project, base_samples):
     goodware = p.goodware(base_samples['goodware']['sample'])
     malware = p.malware(base_samples['malware']['sample'])
     goodware.put()
-    malware.put()
+    malware.put()   # put in database
 
     # craft samples to test heuristics
 
@@ -60,6 +60,7 @@ def main():
     # create the top-level parser
     parser = argparse.ArgumentParser(prog='PROG')
     parser.add_argument('--vt-key', type=str, help='VirusTotal API Key')
+    parser.add_argument('--debug', action='store_true', help='Enable debug log messages')
 
     parser.add_argument('name', type=str,
                         help='Name of the crave project (dir where to store results)')
@@ -84,6 +85,9 @@ def main():
     except IOError as e:
         parser.error(e)
         sys.exit()
+
+    if args.debug:
+        logging.getLogger('crave').setLevel('DEBUG')
 
     project = Project(args.name, args.vt_key)
 
