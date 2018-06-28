@@ -98,7 +98,7 @@ class CraftFactory(object):
 
         self.mutations = permutate(list(mutations_dict.itervalues()))
 
-    def __call__(self, sample, mutation):
+    def __call__(self, sample, mutation, tags=[]):
         from copy import copy
         # setup crafter and mutate
         crafter = Crafter(self.project, sample)
@@ -112,10 +112,12 @@ class CraftFactory(object):
         l.debug('Created sample %s, mutation(s): %s',
                 h, ' '.join(mutation.__name__.split('_')[-2:]))
 
-        # TODO: add tags (i.e. mutations) to sample
-
-        tags = copy(sample.tag)
         # TODO: awful hack, fix when defining classes (plugins) for mutations
-        tags.append(' '.join(mutation.__name__.split('_')[-2:]))
+        t = copy(sample.tags)
+        t.extend(tags)
 
-        return self.project.sample(path, tag=tags)
+        mutations = copy(sample.mutations)
+        # TODO: awful hack, fix when defining classes (plugins) for mutations
+        mutations.append(''.join(mutation.__name__.split('_')[-2:]))
+
+        return self.project.sample(path, t, mutations)

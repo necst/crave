@@ -32,15 +32,15 @@ class Project(object):
         self.scanner = PluginFactory(Scanner, self, scanner_opts)
 
     def goodware(self, sample):
-        return self.sample(sample, tag=[TAGS.GOODWARE,])
+        return self.sample(sample, [TAGS.GOODWARE,], [])
 
     def malware(self, sample):
-        return self.sample(sample, tag=[TAGS.MALWARE,])
+        return self.sample(sample, [TAGS.MALWARE,], [])
 
-    def sample(self, sample, tag):
+    def sample(self, sample, tags, mutations):
         """ tags will define what kind of sample we are talking about,
         for example 'goodware', 'malware', or the set of mutations applied to it """
-        return Sample(self, sample, tag=tag)
+        return Sample(self, sample, tags=tags, mutations=mutations)
 
     def scan():
         pass

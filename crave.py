@@ -4,7 +4,10 @@ import sys
 import json
 import argparse
 from itertools import chain
+
 from crave.utils import logs  # enable default logger
+from crave.sample import TAGS
+
 
 l = logging.getLogger('crave.crave')
 
@@ -34,7 +37,7 @@ def craft_it(project, base_samples):
 
     # craft samples to test heuristics
 
-    for s in chain(goodware.craft(), malware.craft()):
+    for s in chain(goodware.craft([TAGS.HEUR,]), malware.craft([TAGS.HEUR,])):
         s.put()
 
     # right now dropper generation is automated only
