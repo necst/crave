@@ -1,4 +1,4 @@
-from crave.plugin import Plugin
+from ..plugin import Plugin
 import logging
 import requests
 from time import sleep
@@ -69,7 +69,7 @@ class Scanner(Plugin):
         else:
             raise NotImplementedError('Rescan not yet implemented')
 
-    def query(self, samples=[]):
+    def query(self, samples=[], no_submit=False):
 
         def _query_vt(resources):
             try:
@@ -87,12 +87,15 @@ class Scanner(Plugin):
                 return None
 
         resources = []
-        for s in samples:
-            r = self.project.db.get_scan(s)
-            if r:
-                resources.append(r['resource'])
-            else:
-                l.debug('No scans present for %s', s.sha256)
+        if no_submit:
+            for s in samples:
+                r = self.project.db.get_scan(s)
+                if r:
+                    resources.append(r['resource'])
+                else:
+                    l.debug('No scans present for %s', s.sha256)
+        else:
+            resources = [s.sha256 for s in samples]
 
 
         while len(resources) > 0:
@@ -113,7 +116,7 @@ class Scanner(Plugin):
                 scan = self.project.db.get_scan(sha256=res['sha256'])
                 scan.update(res)
                 self.project.db.put_scan(scan, sha256=res['sha256'])
-                l.debug('Updated scans for %s:', res['sha256'])
+                l.debug('Updated scans for %s', res['sha256'])
 
 
             if queries >= to_process * self.MAX_QUERIES:
@@ -125,11 +128,10 @@ class Scanner(Plugin):
 
     def scan_all(self):
         for s in self.project.db.all_samples:
-            break
             self.submit(s)
 
-    def query_all(self):
+    def query_all(self, no_submit=False):
         # TODO batch request with X samples per request
         samples = self.project.db.all_samples
-        res = self.query(samples)
+        res = self.query(samples, no_submit)
         return res

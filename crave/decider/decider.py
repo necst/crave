@@ -1,6 +1,8 @@
-class Decider:
+from ..plugin import Plugin
 
-    def test_emu(self, goodware, malware):
+class Decider(Plugin):
+
+    def emulation(self, goodware, malware):
         # we need to query
         # goodware -> dropper
         # malware -> dropper
@@ -16,15 +18,10 @@ class Decider:
         # look at scan results and infer
         return {}
 
-    def test_heuristics(self, sample):
-        _sample = self.project.get_sample(sample)
-        heur = _sample.get_heuristics()
+    def heuristics(self):
+        print 'yolo'
 
-        for s in heur:
-            pass
-        # infer if it gets more detections or less
-
-    def test_static_unpack(self, malware):
+    def static_unpacking(self, malware):
         sample = malware.get_sample() # (?) o gli passiamo un sample direttamente
         packed = sample.get_packed()
         broke_oep = packed.get_heur('retoep')

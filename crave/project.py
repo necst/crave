@@ -5,9 +5,12 @@ from .sample import Sample, TAGS
 from .cravedb.cravedb import DBFactory
 from .plugin import PluginFactory
 from .scanner import Scanner
+from .decider import Decider
 import logging
 
+
 l = logging.getLogger('crave.project')
+
 
 class Project(object):
 
@@ -30,20 +33,15 @@ class Project(object):
         self.crafter = CraftFactory(self)
 
         self.scanner = PluginFactory(Scanner, self, scanner_opts)
+        self.decider = PluginFactory(Decider, self, {})
 
     def goodware(self, sample):
-        return self.sample(sample, [TAGS.GOODWARE,], [])
+        return self.sample(sample, [TAGS.GOODWARE, ], [])
 
     def malware(self, sample):
-        return self.sample(sample, [TAGS.MALWARE,], [])
+        return self.sample(sample, [TAGS.MALWARE, ], [])
 
     def sample(self, sample, tags, mutations):
         """ tags will define what kind of sample we are talking about,
         for example 'goodware', 'malware', or the set of mutations applied to it """
         return Sample(self, sample, tags=tags, mutations=mutations)
-
-    def scan():
-        pass
-
-    def infer():
-        pass

@@ -50,13 +50,14 @@ def craft_it(project, base_samples):
     # add base samples to test packers
 
 
-def scan_it(project):
-    project.scanner.scan_all()
+def scan_it(project, no_submit):
+    if not no_submit:
+        project.scanner.scan_all()
     project.scanner.query_all()
 
 
 def infer_it(project):
-    pass
+    project.decider.heuristics()
 
 
 def main():
@@ -80,6 +81,8 @@ def main():
     # create the parser for the "b" command
     parser_b = subparsers.add_parser(
         'scan', help='Scan with virustotal the crafted samples')
+    parser_b = parser_b.add_argument(
+        '--no-submit', action='store_true', help='Do not submit samples, but retrieve results from VT')
 
     parser_c = subparsers.add_parser(
         'infer', help='Infer AV capabilities from scan results')
@@ -101,7 +104,7 @@ def main():
             base_samples = json.load(f)
         craft_it(project, base_samples)
     elif args.subcommand == 'scan':
-        scan_it(project)
+        scan_it(project, args.no_submit)
     elif args.subcommand == 'infer':
         infer_it(project)
 
