@@ -37,7 +37,7 @@ def craft_it(project, base_samples):
 
     # craft samples to test heuristics
 
-    for s in chain(goodware.craft([TAGS.HEUR,]), malware.craft([TAGS.HEUR,])):
+    for s in chain(goodware.craft([TAGS.HEUR, ]), malware.craft([TAGS.HEUR, ])):
         s.put()
 
     # right now dropper generation is automated only
@@ -51,7 +51,8 @@ def craft_it(project, base_samples):
 
 
 def scan_it(project):
-    print project.scanner.scan_all()
+    project.scanner.scan_all()
+    project.scanner.query_all()
 
 
 def infer_it(project):
@@ -63,7 +64,8 @@ def main():
     # create the top-level parser
     parser = argparse.ArgumentParser(prog='PROG')
     parser.add_argument('--vt-key', type=str, help='VirusTotal API Key')
-    parser.add_argument('--debug', action='store_true', help='Enable debug log messages')
+    parser.add_argument('--debug', action='store_true',
+                        help='Enable debug log messages')
 
     parser.add_argument('name', type=str,
                         help='Name of the crave project (dir where to store results)')

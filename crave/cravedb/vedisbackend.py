@@ -9,6 +9,7 @@ from ..sample import Sample
 l = logging.getLogger('crave.cravedb.vedisbackend')
 DB_NAME = 'crave.db'
 
+
 class VedisBackend(DBPlugin):
 
     def connect(self):
@@ -18,8 +19,9 @@ class VedisBackend(DBPlugin):
     def get_sample(self, sha256):
         s = self._samples[sha256]
         j = json.loads(s)
-        l.debug(j)
-        return Sample(self.project, j['file'], j['tags'], j['mutations'], j.get('base_sample', None))
+        return Sample(
+                self.project, j['file'], j['tags'],
+                j['mutations'], j.get('base_sample', None))
 
     def put_sample(self, sample):
         self._samples[sample.sha256] = sample.to_json()
@@ -29,6 +31,24 @@ class VedisBackend(DBPlugin):
 
         self._db.commit()
 
+    def put_scan(self, scan, sample=None, sha256=None):
+        if sha256:
+            h = sha256
+        else:
+            h = sample.sha256
+        self._scans[h] = json.dumps(scan)
+        self._db.commit()
+
+    def get_scan(self, sample=None, sha256=None):
+        if sha256:
+            h = sha256
+        else:
+            h = sample.sha256
+        res = self._scans[h]
+        if res:
+            return json.loads(res)
+        return None
+
     @property
     def _samples(self):
         return self._db.Hash('samples')
@@ -36,6 +56,10 @@ class VedisBackend(DBPlugin):
     @property
     def _tags(self):
         return self._db.Hash('tags')
+
+    @property
+    def _scans(self):
+        return self._db.Hash('scans')
 
     @property
     def all_samples(self):
