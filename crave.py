@@ -80,9 +80,9 @@ def main():
 
     # create the parser for the "b" command
     parser_b = subparsers.add_parser(
-        'scan', help='Scan with virustotal the crafted samples')
-    parser_b = parser_b.add_argument(
-        '--no-submit', action='store_true', help='Do not submit samples, but retrieve results from VT')
+            'scan', help='Scan with virustotal the crafted samples')
+    parser_b.add_argument('--no-submit', action='store_true',
+            help='Do not submit samples, but retrieve results from VT')
 
     parser_c = subparsers.add_parser(
         'infer', help='Infer AV capabilities from scan results')

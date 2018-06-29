@@ -28,7 +28,7 @@ class VedisBackend(DBPlugin):
 
         # keep reference of the sample for each tag :)
         for t in sample.tags:
-            self._tags[t] = sample.sha256
+            self.put_tag(t, sample.sha256)
 
         self._db.commit()
 
@@ -50,13 +50,16 @@ class VedisBackend(DBPlugin):
             return json.loads(res)
         return None
 
+    def put_tag(self, tag, sha256):
+        t = self._db.Set('tag_' + tag)
+        t.add(sha256)
+
+    def get_tagged_samples(self, tag):
+        return self._db.Set('tag_' + tag)
+
     @property
     def _samples(self):
         return self._db.Hash('samples')
-
-    @property
-    def _tags(self):
-        return self._db.Hash('tags')
 
     @property
     def _scans(self):

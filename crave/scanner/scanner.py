@@ -114,7 +114,11 @@ class Scanner(Plugin):
                 resources.remove(res['resource'])
 
                 scan = self.project.db.get_scan(sha256=res['sha256'])
-                scan.update(res)
+                if scan is not None:
+                    scan.update(res)
+                else:
+                    scan = res
+
                 self.project.db.put_scan(scan, sha256=res['sha256'])
                 l.debug('Updated scans for %s', res['sha256'])
 

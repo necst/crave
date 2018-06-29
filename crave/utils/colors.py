@@ -18,3 +18,7 @@ def green(text):
 
 def yellow(text):
     return color(text, 33)
+
+
+def blue(text):
+    return color(text, 34)
