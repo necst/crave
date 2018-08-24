@@ -2,3 +2,5 @@ requests==2.18.4
 angr==7.8.2.21
 pefile==2017.11.5
 keystone-engine==0.9.1.post3
+vedis==0.7.0
+colorlog==3.1.4
