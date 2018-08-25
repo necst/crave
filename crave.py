@@ -29,9 +29,14 @@ def craft_it(project, base_samples):
     p = project
     name = project.name
 
+    samples_dir = base_samples.get('samples_dir', 'base_samples')
+
+    def gd(sample):
+        return os.path.join(samples_dir, sample)
+
     # add base samples goodware/malware
-    goodware = p.goodware(base_samples['goodware']['sample'])
-    malware = p.malware(base_samples['malware']['sample'])
+    goodware = p.goodware(gd(base_samples['goodware']['sample']))
+    malware = p.malware(gd(base_samples['malware']['sample']))
     goodware.put()
     malware.put()   # put in database
 
