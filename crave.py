@@ -13,6 +13,7 @@ l = logging.getLogger('crave.crave')
 
 from crave import Project
 
+from vt import vtkey
 
 """ tests currently "available"
   + goodware -> heuristics ~ +detections
@@ -23,9 +24,7 @@ from crave import Project
   + malware -> dropper (on demand scan == test emulation!)
 """
 
-
-def craft_it(project, base_samples):
-
+def load_samples(project, base_samples):
     p = project
     name = project.name
 
@@ -34,6 +33,27 @@ def craft_it(project, base_samples):
     malware = p.malware(base_samples['malware']['sample'])
     goodware.put()
     malware.put()   # put in database
+
+    # craft samples to test heuristics
+
+    for s in chain(goodware.craft([TAGS.HEUR, ]), malware.craft([TAGS.HEUR, ])):
+        s.put()
+
+def pack_samples(project):
+    pass
+
+def gen_dropper():
+    pass
+
+def craft_it(project, base_samples):
+
+    p = project
+    name = project.name
+
+    # add base samples goodware/malware
+    goodware = p.sample.
+    p.goodware(base_samples['goodware']['sample'])
+    malware = p.malware(base_samples['malware']['sample'])
 
     # craft samples to test heuristics
 
@@ -97,7 +117,7 @@ def main():
     if args.debug:
         logging.getLogger('crave').setLevel('DEBUG')
 
-    project = Project(args.name, args.vt_key)
+    project = Project(args.name, vtkey or args.vt_key)
 
     if args.subcommand == 'craft':
         with open(args.base_samples) as f:

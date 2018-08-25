@@ -18,6 +18,9 @@ class DBPlugin(object):
     def get_sample(self, sample_hash):
         raise NotImplementedError()
 
+    def get_by_tag(self, tags=[]):
+        raise NotImplementedError()
+
     def get_avresults(self, sample_hash):
         raise NotImplementedError()
 
