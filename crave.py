@@ -13,7 +13,10 @@ l = logging.getLogger('crave.crave')
 
 from crave import Project
 
-from vt import vtkey
+try:
+    from vt import vtkey
+except:
+    vtkey = None
 
 """ tests currently "available"
   + goodware -> heuristics ~ +detections
@@ -39,11 +42,6 @@ def load_samples(project, base_samples):
     goodware.put()
     malware.put()   # put in database
 
-    # craft samples to test heuristics
-
-    for s in chain(goodware.craft([TAGS.HEUR, ]), malware.craft([TAGS.HEUR, ])):
-        s.put()
-
 def pack_samples(project):
     pass
 
@@ -55,25 +53,8 @@ def craft_it(project, base_samples):
     p = project
     name = project.name
 
-    # add base samples goodware/malware
-    goodware = p.sample.
-    p.goodware(base_samples['goodware']['sample'])
-    malware = p.malware(base_samples['malware']['sample'])
-
-    # craft samples to test heuristics
-
     for s in chain(goodware.craft([TAGS.HEUR, ]), malware.craft([TAGS.HEUR, ])):
         s.put()
-
-    # right now dropper generation is automated only
-    # with mingw, we might want to use it at a later stage
-    # (compilation options seems to able to change recognition too)
-    # add base samples to test emu (dropper)
-
-    # same for packers, for now let's load samples generated manually
-    # we'll automate the packing process later
-    # add base samples to test packers
-
 
 def scan_it(project, no_submit):
     if not no_submit:
@@ -98,18 +79,17 @@ def main():
     subparsers = parser.add_subparsers(
         help='Available crave commands', dest='subcommand')
 
-    # create the parser for the "a" command
-    parser_a = subparsers.add_parser('craft', help='craft samples')
-    parser_a.add_argument('base_samples', type=str,
-                          help='base samples json file')
+    parser_load = subparsers.add_parser('load', help='load samples from json config')
+    parser_load.add_argument('base_samples', type=str, help='base samples json file')
 
-    # create the parser for the "b" command
-    parser_b = subparsers.add_parser(
+    parser_craft = subparsers.add_parser('craft', help='craft samples')
+
+    parser_scan = subparsers.add_parser(
             'scan', help='Scan with virustotal the crafted samples')
-    parser_b.add_argument('--no-submit', action='store_true',
+    parser_scan.add_argument('--no-submit', action='store_true',
             help='Do not submit samples, but retrieve results from VT')
 
-    parser_c = subparsers.add_parser(
+    parser_infer = subparsers.add_parser(
         'infer', help='Infer AV capabilities from scan results')
     # parser_c.add_argument('--baz', choices='XYZ', help='baz help')
 
@@ -124,9 +104,11 @@ def main():
 
     project = Project(args.name, vtkey or args.vt_key)
 
-    if args.subcommand == 'craft':
+    if args.subcommand == 'load':
         with open(args.base_samples) as f:
             base_samples = json.load(f)
+        load_samples(project, base_samples)
+    elif args.subcommand == 'craft':
         craft_it(project, base_samples)
     elif args.subcommand == 'scan':
         scan_it(project, args.no_submit)

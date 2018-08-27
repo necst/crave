@@ -1,5 +1,5 @@
 {
-   "samples_dir": "../base_samples",
+   "samples_dir": "base_samples",
    "goodware": {
        "sample": "helloworld.exe",
        "dropper": "droppergoodware.exe",
