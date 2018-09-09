@@ -5,7 +5,9 @@ import logging
 from hashlib import sha256
 import os
 import shutil
-from crave.utils.permutation import OrderedDefaultDict, permutate
+from ..utils.permutation import permutate
+from collections import OrderedDict
+from ..sample import TAGS
 
 l = logging.getLogger("crave.crafter")
 
@@ -84,11 +86,11 @@ class CraftFactory(object):
             return
 
         # permutate all the things! \o/
-        mutations_dict = OrderedDefaultDict(list)
+        mutations_dict = OrderedDict()
 
         for f in mutations:
             category, mutation = f.__name__.lstrip('mutation_').split('_')
-            mutations_dict[category].append((mutation,f))
+            mutations_dict.setdefault(category, list).append((mutation,f))
 
         mutations_dict['checksum'] = [('checksum', Crafter.update_checksum),]
 
@@ -98,7 +100,7 @@ class CraftFactory(object):
 
         self.mutations = permutate(list(mutations_dict.itervalues()))
 
-    def __call__(self, sample, mutation, tags=[]):
+    def __call__(self, sample, mutation, tags=[TAGS.unknown,]):
         from copy import copy
         # setup crafter and mutate
         crafter = Crafter(self.project, sample)
@@ -112,12 +114,18 @@ class CraftFactory(object):
         l.debug('Created sample %s, mutation(s): %s',
                 h, ' '.join(mutation.__name__.split('_')[-2:]))
 
-        # TODO: awful hack, fix when defining classes (plugins) for mutations
+        """
         t = copy(sample.tags)
-        t.extend(tags)
+        try:
+            t.remove(TAGS.base)
+        except ValueError:
+            pass
+        t.extend(tags)"""
+
+
 
         mutations = copy(sample.mutations)
         # TODO: awful hack, fix when defining classes (plugins) for mutations
         mutations.append(''.join(mutation.__name__.split('_')[-2:]))
 
-        return self.project.sample(path, t, mutations)
+        return self.project.sample(path, tags, mutations, sample)

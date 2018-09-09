@@ -6,8 +6,34 @@ from time import sleep
 
 l = logging.getLogger('crave.scanner')
 
-
+# TODO: abstract with a ScannerPlugin
 class Scanner(Plugin):
+
+    short_name = "scan_plugin"
+
+    def _init_plugin(self, *args, **kwargs):
+
+        super(VirusTotal, self)._init_plugin(*args, **kwargs)
+        self.project.scanners[short_name] = self
+
+    def __init__(self, *args, **kwargs):
+        super(Scanner, self)._init_plugin(*args, **kwargs)
+
+    def get_pending_scans(self):
+        self.project.db.get_pending(self)
+
+    def put_pending(self, scans):
+        self.project.db.put_pending(self, scans)
+
+    def put_done(self):
+        pass
+
+    def get_done(self):
+        pass
+
+class VirusTotal(Scanner):
+
+    short_name = "virustotal"
 
     VT_RES_URL = 'https://www.virustotal.com/vtapi/v2/file/report'
     VT_SCAN_URL = 'https://www.virustotal.com/vtapi/v2/file/scan'
@@ -19,15 +45,6 @@ class Scanner(Plugin):
         "Accept-Encoding": "gzip, deflate",
         "User-Agent" : "gzip,  CRAVE framework"
     }
-
-    def _init_plugin(self, *args, **kwargs):
-
-        super(Scanner, self)._init_plugin(*args, **kwargs)
-
-        self._vt_key = self.project._vt_key
-
-        if self._vt_key is None:
-            l.warning('No VirusTotal Key given, scanning won\'t work')
 
     def query(self, resources):
         params = {'apikey': self._vt_key, 'resource': ','.join(resources)}
@@ -86,17 +103,11 @@ class Scanner(Plugin):
                 l.exception('Error querying VT!')
                 return None
 
-        resources = []
-        if no_submit:
-            for s in samples:
-                r = self.project.db.get_scan(s)
-                if r:
-                    resources.append(r['resource'])
-                else:
-                    l.debug('No scans present for %s', s.sha256)
-        else:
-            resources = [s.sha256 for s in samples]
+        # get pending scans submitted with submit()
 
+        scans = self.get_pending_scans()
+
+        resources = [lambda s: s.extra["resource"] for s in scans]
 
         while len(resources) > 0:
             processed = 0
@@ -112,16 +123,16 @@ class Scanner(Plugin):
 
                 processed += 1
                 resources.remove(res['resource'])
+                for av, r in res['scans']:
+                    scans.append(
+                        self.project.ScanResult(
+                            sample=res['sha256'], scanner=self,
+                            uuid=None, av=av,
+                            label=None if r['detected'] is False else r['result'],
+                            version=r['version'], update=r['update']))
 
-                scan = self.project.db.get_scan(sha256=res['sha256'])
-                if scan is not None:
-                    scan.update(res)
-                else:
-                    scan = res
-
-                self.project.db.put_scan(scan, sha256=res['sha256'])
-                l.debug('Updated scans for %s', res['sha256'])
-
+            self.project.db.put_scans(res, sha256=res['sha256'], scans)
+            l.debug('Updated scans for %s', res['sha256'])
 
             if queries >= to_process * self.MAX_QUERIES:
                 break       # until MAX_QUERIES hit
@@ -130,12 +141,19 @@ class Scanner(Plugin):
                     sleep(self.QUERY_SLEEP)    # wait for more analysis to come
                     continue
 
+
     def scan_all(self):
         for s in self.project.db.all_samples:
             self.submit(s)
 
-    def query_all(self, no_submit=False):
+    def query_all(self):
         # TODO batch request with X samples per request
         samples = self.project.db.all_samples
-        res = self.query(samples, no_submit)
+        res = self.query(samples)
         return res
+
+    def set_key(self):
+        self._vt_key = self.project._vt_key
+
+        if self._vt_key is None:
+            l.warning('No VirusTotal Key given, scanning won\'t work')

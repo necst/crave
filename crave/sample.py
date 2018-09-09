@@ -5,13 +5,29 @@ from hashlib import sha256
 
 l = logging.getLogger('crave.sample')
 
+
+class METATAG(type):
+    tags = ['base', 'malware', 'goodware', 'packed', 'dropper', 'unknown']
+
+    def __getattr__(self, tag):
+        t = tag.lower()
+        if t in TAGS.tags:
+            return t
+        raise AttributeError(tag)
+
+    def __getitem__(self, tag):
+        return getattr(self, tag)
+
+    def __setattr__(key, item):
+        pass
+
+
 class TAGS():
-    MALWARE = 'malware'
-    GOODWARE = 'goodware'
-    HEUR = 'heur'
-    PACK = 'pack'
-    DROP = 'drop'
-    UNKNOWN = 'unknown'
+    __metaclass__ = METATAG
+
+    @staticmethod
+    def add_tag(tag):
+        TAGS.tags.append(tag)
 
 
 # TODO make this a crave plugin
@@ -34,7 +50,7 @@ class Sample(object):
                 self.sha256, self.tags, self.mutations)
         self.project.db.put_sample(self)
 
-    def craft(self, tags=[], mutations=[]):
+    def craft(self, tags=[TAGS.unknown], mutations=[]):
         """ apply all possible mutations to the sample and store
         in the database, we'll be ready to go and scan these,
         returns another instance of a Sample """

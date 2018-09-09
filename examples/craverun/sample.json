@@ -1,0 +1,32 @@
+{
+    "samples_path": "base_samples",
+    "samples":[{
+        "sample": "helloworld.exe",
+        "tags": "goodware",
+        "mutations":[],
+        "childs": [{
+            "sample": "droppergoodware.exe",
+            "tags": "dropper"},{
+            "sample": "helloworld_upx.exe",
+            "tags": "packed",
+            "packer": "UPX"}],
+        "!working":{
+            "!sample": "helloworld_mew.exe",
+            "!tags": "packed",
+            "!packer": "MEW"}
+        },{
+        "sample": "virut",
+        "tags": "malware",
+        "mutations":[],
+        "childs": [{
+            "sample": "virut_dropper",
+            "tags": "dropper"},{
+            "sample": "virut_upx",
+            "tags": "packed",
+            "packer": "UPX"}],
+        "!working":{
+            "!sample": "virut_mew",
+            "!tags": "packed",
+            "!packer": "MEW"}
+        }]
+}

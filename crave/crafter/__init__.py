@@ -1,1 +1,1 @@
-from crave.crafter.craft import CraftFactory
+from .craft import CraftFactory, Crafter
