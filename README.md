@@ -1,4 +1,4 @@
-# About crAVe
+# crAVe
 [![GitHub license](https://img.shields.io/github/license/necst/crave.svg)](https://github.com/necst/crave/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/necst/crave.svg)](https://github.com/necst/crave/issues)
 
@@ -11,7 +11,7 @@ While crAVe still lacks proper documentation you can find examples of usage in t
 With `craverun.py` you can reproduce the results we presented at DIMVA 2018.
 
 
-# Research that makes use of crAVe
+## Research that makes use of crAVe
 [**Toward Systematically Exploring Antivirus Engines** (short paper)](https://github.com/necst/crave/raw/master/crave.pdf)
 Davide Quarta, Federico Salvioni, Andrea Continella, Stefano Zanero.
 *In Proceedings of the Conference on Detection of Intrusions and Malware and Vulnerability Assessment (DIMVA), June 2018*

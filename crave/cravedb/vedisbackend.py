@@ -52,18 +52,6 @@ class VedisBackend(DBPlugin):
         for t in sample.tags:
             self.put_tag(t, sample.sha256)
 
-    def get_scans(self, sample=[], sha256=[]):
-
-        if sha256:
-            h = sha256
-        else:
-            h = map(lambda s: s.sha256, sample)
-
-        res = self._scans.mget(h)
-        if res:
-            return [json.loads(r) for r in res]
-        return None
-
     @commit_on_success
     def put_tag(self, tag, sha256):
         t = self._db.Set('tag_' + tag)
@@ -96,7 +84,7 @@ class VedisBackend(DBPlugin):
         for s in self._samples.keys():
             yield self.get_sample(s)
 
-    def get_scans(scanner=None, av=None, uuids=[]):
+    """def get_scans(scanner=None, av=None, uuids=[]):
         if scanner is not None:
             # get by scanner
             byscanner = ?
@@ -107,11 +95,12 @@ class VedisBackend(DBPlugin):
         if len(uuids) > 0:
             scans = ?
 
-        return byscanner & byav & uuids
+        return byscanner & byav & uuids"""
 
     @commit_on_success
-    def _put_scan_results(self, res):
-        self._scanresults[res.uuid] =
+    def _put_scan_results(self, scan_result):
+        self._scanresults[res.uuid] = scan_result
+        # "update" the set of scanresults for a given scan
 
     def scan_to_dict(self):
         return {
@@ -120,13 +109,13 @@ class VedisBackend(DBPlugin):
                 'av': av,
                 'extra': extra }
 
-    def scan_from_dict(cls, d):
-        return cls(d['uuid'], ...)
+    """def scan_from_dict(cls, d):
+        return cls(d['uuid'], ...)"""
 
     @commit_on_success
     def put_scan(self, scan):
 
-        scanner = scan.scanner
+        scanner = scan.scanner.short_name
 
         if scan.pending:
             # add to pending Set
@@ -139,7 +128,9 @@ class VedisBackend(DBPlugin):
 
         self._scans[scan.uuid] = json.dumps(scan_to_dict(scan))
 
-    def get_scan_results(self, av..):
+        l.debug("Scan %s stored in database", scan)
+
+    def get_scan_results(self, av):
         pass
 
     def close(self):

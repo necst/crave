@@ -13,10 +13,6 @@ l = logging.getLogger('crave.crave')
 
 from crave import Project, Crafter
 
-try:
-    from vt import vtkey
-except:
-    vtkey = None
 
 """ tests currently "available"
   + goodware -> heuristics ~ +detections
@@ -84,7 +80,7 @@ def craft_it(project):
 
 
 def scan_it(project, no_submit):
-    scanner = self.project.scanners['virustotal']
+    scanner = project.scanners['virustotal']
     if not no_submit:
         scanner.scan_all()
     scanner.query_all()
@@ -97,11 +93,11 @@ def infer_it(project):
 def main():
 
     # create the top-level parser
-    parser = argparse.ArgumentParser(prog='PROG')
+    parser = argparse.ArgumentParser(prog=sys.argv[0])
     parser.add_argument('--debug', action='store_true',
                         help='Enable debug log messages')
 
-    parser.add_argument('name', type=str,
+    parser.add_argument('projectname', type=str,
                         help='Name of the crave project (dir where to store results)')
     subparsers = parser.add_subparsers(
         help='Available crave commands', dest='subcommand')
@@ -132,7 +128,7 @@ def main():
     if args.debug:
         logging.getLogger('crave').setLevel('DEBUG')
 
-    with Project(args.name) as project:
+    with Project(args.projectname) as project:
         TAGS.add_tag('heuristics')  # define a new tag
         TAGS.add_tag('testemu')
         TAGS.add_tag('teststaticpack')
@@ -146,7 +142,7 @@ def main():
         elif args.subcommand == 'craft':
             craft_it(project)
         elif args.subcommand == 'scan':
-            project.set_vtkey(vtkey or scan_args.vt_key)
+            project.scanners['virustotal'].set_key(args.vt_key)
             scan_it(project, args.no_submit)
         elif args.subcommand == 'infer':
             infer_it(project)

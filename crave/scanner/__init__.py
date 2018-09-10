@@ -1,1 +1,2 @@
-from .scanner import VirusTotal
+from .virustotal import VirusTotal
+

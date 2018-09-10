@@ -45,10 +45,7 @@ class Project(object):
     def sample(self, sample, tags=[], mutations=[], base_sample=None):
         """ tags will define what kind of sample we are talking about,
         for example 'goodware', 'malware', or the set of mutations applied to it """
-        return Sample(self, sample, tags, mutations, base_sample) # last param = base sample(s)?
-
-    def set_vtkey(self, vt_key):
-        self.scanner.set_key()
+        return Sample(self, sample, tags, mutations, base_sample)
 
     def close(self):
         self.db.close()
