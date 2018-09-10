@@ -20,7 +20,7 @@ class Scanner(Plugin):
         super(Scanner, self)._init_plugin(*args, **kwargs)
 
     def get_pending_scans(self):
-        self.project.db.get_pending(self)
+        self.project.db.get_pending_scans(self)
 
     def put_pending(self, scans):
         self.project.db.put_pending(self, scans)
@@ -107,12 +107,14 @@ class VirusTotal(Scanner):
 
         scans = self.get_pending_scans()
 
-        resources = [lambda s: s.extra["resource"] for s in scans]
+        resources = {}
+        for s in scans:
+            resources[s.extra["resource"]] = s
 
         while len(resources) > 0:
             processed = 0
             queries = 0
-            r = _query_vt(resources[:25])
+            r = _query_vt(resources.keys()[:25])
             to_process = len(r)
 
             for res in r:
@@ -122,16 +124,22 @@ class VirusTotal(Scanner):
                     continue
 
                 processed += 1
-                resources.remove(res['resource'])
+                scan_results = []
+
                 for av, r in res['scans']:
-                    scans.append(
+                    scans_results.append(
                         self.project.ScanResult(
                             sample=res['sha256'], scanner=self,
                             uuid=None, av=av,
                             label=None if r['detected'] is False else r['result'],
                             version=r['version'], update=r['update']))
 
-            self.project.db.put_scans(res, sha256=res['sha256'], scans)
+                scan = resources.pop(res['resource'])
+                scan.scan_results = scan_results
+                scan.pending = False
+
+                self.project.db.put_scan(scan) # this will also update scan_results accordingly
+
             l.debug('Updated scans for %s', res['sha256'])
 
             if queries >= to_process * self.MAX_QUERIES:

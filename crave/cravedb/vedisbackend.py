@@ -52,9 +52,6 @@ class VedisBackend(DBPlugin):
         for t in sample.tags:
             self.put_tag(t, sample.sha256)
 
-
-
-
     def get_scans(self, sample=[], sha256=[]):
 
         if sha256:
@@ -87,8 +84,11 @@ class VedisBackend(DBPlugin):
     def _scans(self):
         return self._db.Hash('scans')
 
-    def _pending(self, scanner):
+    def _pending_scans(self, scanner):
         return self._db.Set('{}_pending'.format(scanner))
+
+    def get_pending_scans(self, scanner):
+        return [Scan(uuid=p) for p in self._pending_scans(scanner)]
 
     @property
     def all_samples(self):
@@ -102,27 +102,26 @@ class VedisBackend(DBPlugin):
             byscanner = ?
 
         if av is not None:
-            byscanner = ?
+            byav = ?
 
         if len(uuids) > 0:
             scans = ?
-    
+
         return byscanner & byav & uuids
 
-    def get_pending_scans(scanner):
-        # pending is a Set contaning scans UUIDS
-        pending = self._pending(scanner)
-        return self.get_scans(scanner, pending.to_set())
-
-    def get_by_scanner(self, scanner):
-        pass
-
-    def get_by_av(self, av):
-        pass
-
     @commit_on_success
-    def put_scan_results(self, res):
-        self._scanresults[res.uuid] = 
+    def _put_scan_results(self, res):
+        self._scanresults[res.uuid] =
+
+    def scan_to_dict(self):
+        return {
+                'label': self.label,
+                'sample': sample.sha256,
+                'av': av,
+                'extra': extra }
+
+    def scan_from_dict(cls, d):
+        return cls(d['uuid'], ...)
 
     @commit_on_success
     def put_scan(self, scan):
@@ -136,18 +135,12 @@ class VedisBackend(DBPlugin):
             self._pending(scanner).remove(scan.uuid)
             self._done(scanner).add(scan.uuid)
 
-            self.put_scan_results(scan.scan_results)
-            # we have just 
+            self._put_scan_results(scan.scan_results)
 
-        # now we're going to be passed a scanner.Scan class
-        # so we need to put the info for the scan itself,
-        # but we also want to be able to query results for a specific sample
-        # and for a specific AV, for each AV we want to be able
-        # to get immediately all the results for a given sample
+        self._scans[scan.uuid] = json.dumps(scan_to_dict(scan))
 
-    def put_pending_scans(self, scans):
-        for s in scans:
-            self.put_scan(scan)
+    def get_scan_results(self, av..):
+        pass
 
     def close(self):
         self._db.close()

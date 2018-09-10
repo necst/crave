@@ -22,11 +22,11 @@ class Scan(Plugin):
 class ScanResult(Plugin):
     """ this class represents a single scan for an AV, on a specific sample, at a given time, extra must be serializable..."""
 
-    def __init__(self, sample, scan, uuid=None, av, label, version, update):
+    def __init__(self, uuid=None, sample=None, scanner=None, scan_results=[]):
         if uuid:
             self.uuid = uuid
         else:
-            self.uuid = UUID()
+            self.uuid = uuid4()
 
         self.scan = scan
         self.scanner = scan.scanner
@@ -35,8 +35,3 @@ class ScanResult(Plugin):
         self.av = av  # we'll have a class also for this, we're building kind of a small orm-like system, but queries? cannot we model them in a better way?
         self.extra = extra
 
-    def get(self):
-        pass
-
-    def put(self):
-        pass
