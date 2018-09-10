@@ -17,11 +17,13 @@ With `craverun.py` you can reproduce the results we presented at DIMVA 2018.
 Davide Quarta, Federico Salvioni, Andrea Continella, Stefano Zanero.
 *In Proceedings of the Conference on Detection of Intrusions and Malware and Vulnerability Assessment (DIMVA), June 2018*
 
-```@inproceedings{quarta2018toward,
+```
+@inproceedings{quarta2018toward,
   title={Toward Systematically Exploring Antivirus Engines},
   author={Quarta, Davide and Salvioni, Federico and Continella, Andrea and Zanero, Stefano},
   booktitle={International Conference on Detection of Intrusions and Malware, and Vulnerability Assessment},
   pages={393--403},
   year={2018},
   organization={Springer}
-}```
+}
+```
