@@ -4,6 +4,7 @@ import logging
 import os
 import json
 from ..sample import Sample
+from ..scanner import Scan
 from functools import wraps
 
 l = logging.getLogger('crave.cravedb.vedisbackend')
@@ -16,7 +17,7 @@ def commit_on_success(f):
             with self._db.transaction():
                 r = f(self, *args, **kwds)
         except:
-            l.exeception("%s, raised an exception, rolling back", f)
+            l.exception("%s, raised an exception, rolling back", f)
             self._db.rollback()
             raise
         else:
@@ -75,8 +76,24 @@ class VedisBackend(DBPlugin):
     def _pending_scans(self, scanner):
         return self._db.Set('{}_pending'.format(scanner))
 
+    def _done_scans(self, scanner):
+        return self._db.Set('{}_done'.format(scanner))
+
     def get_pending_scans(self, scanner):
-        return [Scan(uuid=p) for p in self._pending_scans(scanner)]
+        pending = self._pending_scans(scanner)
+
+        if len(pending) == 0:
+            return []
+
+        scans = []
+
+        for p in pending:
+            d = self._get_scan(p)
+            scans.append(Scan(
+                scanner=scanner, uuid=d['uuid'], 
+                sample=d['sample'], scan_id=d['scan_id'],
+                scan_results=d['scan_results']))
+        return scans
 
     @property
     def all_samples(self):
@@ -84,33 +101,33 @@ class VedisBackend(DBPlugin):
         for s in self._samples.keys():
             yield self.get_sample(s)
 
-    """def get_scans(scanner=None, av=None, uuids=[]):
-        if scanner is not None:
-            # get by scanner
-            byscanner = ?
-
-        if av is not None:
-            byav = ?
-
-        if len(uuids) > 0:
-            scans = ?
-
-        return byscanner & byav & uuids"""
-
     @commit_on_success
     def _put_scan_results(self, scan_result):
         self._scanresults[res.uuid] = scan_result
         # "update" the set of scanresults for a given scan
 
-    def scan_to_dict(self):
+    @staticmethod
+    def res_to_dict(scan):
         return {
-                'label': self.label,
-                'sample': sample.sha256,
-                'av': av,
-                'extra': extra }
+                'label': scan.label,
+                'sample': scan.sample.sha256,
+                'av': scan.av,
+                'extra': scan.extra }
 
-    """def scan_from_dict(cls, d):
-        return cls(d['uuid'], ...)"""
+    def _get_scan(self, uuid):
+        return self._db.Hash(uuid)
+
+    def _get_scan_result(self, scan):
+        return self._db.Set(scan.uuid + '_results')
+
+    def _res_by_sample(self, sample):
+        return self._db.Set(scan.sample.sha + '_results')
+
+    def _res_by_av(self, av):
+        return self._db.Set(av + '_results')
+
+    def _scan_by_sample(self, sample):
+        return self._db.Set(sample.sha256 + '_scans')
 
     @commit_on_success
     def put_scan(self, scan):
@@ -119,14 +136,23 @@ class VedisBackend(DBPlugin):
 
         if scan.pending:
             # add to pending Set
-            self._pending(scanner).add(scan.uuid)
+            self._pending_scans(scanner).add(scan.uuid)
+
         else:
-            self._pending(scanner).remove(scan.uuid)
-            self._done(scanner).add(scan.uuid)
+            self._pending_scans(scanner).remove(scan.uuid)
 
             self._put_scan_results(scan.scan_results)
+            self._done_scan(scanner).add(scan.uuid)
 
-        self._scans[scan.uuid] = json.dumps(scan_to_dict(scan))
+            self._scan_by_sample(scan.sample).add(scan.uuid)
+
+            for res in scan.scan_results:
+                self._results(res.uuid).update(**res.to_dict())
+                # add its reference to sets for quick querying
+                self._res_by_sample(scan.sample).add(res.uuid)
+                self._res_by_av(res.av).add(res.uuid)
+
+        self._get_scan(scan.uuid).update(**scan.to_dict())
 
         l.debug("Scan %s stored in database", scan)
 

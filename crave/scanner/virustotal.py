@@ -1,4 +1,5 @@
 from .scanner import Scanner
+from .scan import Scan, ScanResult
 import logging
 import requests
 from time import sleep
@@ -28,7 +29,7 @@ class VirusTotal(Scanner):
 
         try:
             response = requests.get(
-                    Scanner.VT_RES_URL, params=params, headers=self.HEADERS)
+                    self.VT_RES_URL, params=params, headers=self.HEADERS)
             report = response.json()
         except Exception as e:
             l.exception('Cannot query VT for %s (%s)',
@@ -50,6 +51,8 @@ class VirusTotal(Scanner):
                     headers=self.HEADERS)
                 resp_json = response.json()
 
+                l.debug("sent %s, received %s", sample.sha256, resp_json)
+
             except Exception as e:
                 l.exception('Cannot submit sample %s', sample.file)
                 return None
@@ -59,9 +62,9 @@ class VirusTotal(Scanner):
                         sample.file, sample.sha256)
                 return resp_json
 
-            s = Scan(sample, uuid=resp_json['scan_id'], pending=True)
             # queued for analysis
-            return self.project.db.put_scan(resp_json, sample)
+            s = Scan(sample, scanner=self, scan_id=resp_json['scan_id'], pending=True)
+            self.project.db.put_scan(s)
 
             # return a Scan object
             return s
@@ -89,9 +92,13 @@ class VirusTotal(Scanner):
 
         scans = self.get_pending_scans()
 
+        if not scans:
+            l.warning("No scans pending")
+            return None
+
         resources = {}
         for s in scans:
-            resources[s.extra["resource"]] = s
+            resources[s.scan_id] = s
 
         while len(resources) > 0:
             processed = 0
@@ -108,15 +115,18 @@ class VirusTotal(Scanner):
                 processed += 1
                 scan_results = []
 
-                for av, r in res['scans']:
-                    scans_results.append(
-                        self.project.ScanResult(
+                from IPython import embed
+                embed()
+                for av, r in res['scans'].iteritems():
+                    scan_results.append(
+                        ScanResult(
+                            scan=res['scan_id'],
                             sample=res['sha256'], scanner=self,
                             uuid=None, av=av,
                             label=None if r['detected'] is False else r['result'],
                             version=r['version'], update=r['update']))
 
-                scan = resources.pop(res['resource'])
+                scan = resources.pop(res['scan_id'])
                 scan.scan_results = scan_results
                 scan.pending = False
 
@@ -146,3 +156,6 @@ class VirusTotal(Scanner):
 
         if self._vt_key is None:
             l.warning('No VirusTotal Key given, scanning won\'t work')
+
+    def __str__(self):
+        return self.short_name

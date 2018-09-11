@@ -79,11 +79,12 @@ def craft_it(project):
     # we're done here, we test emulation with our dropper
 
 
-def scan_it(project, no_submit):
+def scan_it(project, submit):
     scanner = project.scanners['virustotal']
-    if not no_submit:
+    if submit:
         scanner.scan_all()
-    scanner.query_all()
+    else:
+        scanner.query_all()
 
 
 def infer_it(project):
@@ -143,7 +144,7 @@ def main():
             craft_it(project)
         elif args.subcommand == 'scan':
             project.scanners['virustotal'].set_key(args.vt_key)
-            scan_it(project, args.no_submit)
+            scan_it(project, not args.no_submit)
         elif args.subcommand == 'infer':
             infer_it(project)
 

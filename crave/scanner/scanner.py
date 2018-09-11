@@ -18,4 +18,4 @@ class Scanner(Plugin):
         super(Scanner, self).__init__(*args, **kwargs)
 
     def get_pending_scans(self):
-        self.project.db.get_pending_scans(self)
+        return self.project.db.get_pending_scans(self)
