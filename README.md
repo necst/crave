@@ -13,8 +13,8 @@ With `craverun.py` you can reproduce the results we presented at DIMVA 2018.
 
 ## Research that makes use of crAVe
 
-[**Toward Systematically Exploring Antivirus Engines** (short paper)](https://github.com/necst/crave/raw/master/crave.pdf)
-Davide Quarta, Federico Salvioni, Andrea Continella, Stefano Zanero.
+[**Toward Systematically Exploring Antivirus Engines** (short paper)](https://github.com/necst/crave/blob/master/examples/craverun/crave.pdf)  
+Davide Quarta, Federico Salvioni, Andrea Continella, Stefano Zanero.  
 *In Proceedings of the Conference on Detection of Intrusions and Malware and Vulnerability Assessment (DIMVA), June 2018*
 
 ```
