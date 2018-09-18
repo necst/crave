@@ -1,8 +1,8 @@
 # craverun
 This example contains the code needed to reproduce the results of our research paper:
 
-[**Toward Systematically Exploring Antivirus Engines** (short paper)](https://github.com/necst/crave/raw/master/crave.pdf)
-Davide Quarta, Federico Salvioni, Andrea Continella, Stefano Zanero.
+[**Toward Systematically Exploring Antivirus Engines** (short paper)](https://github.com/necst/crave/blob/master/examples/craverun/crave.pdf)  
+Davide Quarta, Federico Salvioni, Andrea Continella, Stefano Zanero.  
 *In Proceedings of the Conference on Detection of Intrusions and Malware and Vulnerability Assessment (DIMVA), June 2018*
 
 Run with:
