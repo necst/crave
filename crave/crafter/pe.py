@@ -49,7 +49,7 @@ class PE(pefile.PE):
         #TODO: get capstone instruction at the end of the basic_block
         try:
             k = ks.Ks(ks.KS_ARCH_X86, ks.KS_MODE_32)
-            encoding, count = k.asm(instructions)
+            encoding, count = k.asm(instructions, va+self.OPTIONAL_HEADER.ImageBase)
         except ks.KsError as e:
             l.error("Error! %s", e)
             raise
